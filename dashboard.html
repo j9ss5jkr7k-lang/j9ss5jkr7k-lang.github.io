@@ -296,9 +296,6 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--navy);co
     <input class="login-input" id="loginCode" type="text" placeholder="ex: ACME-2025" autocomplete="off"/>
     <label class="login-label">Mot de passe</label>
     <input class="login-input" id="loginPass" type="password" placeholder="••••••••"/>
-    <label class="login-label">Clé API Anthropic</label>
-    <input class="login-input" id="loginApiKey" type="password" placeholder="sk-ant-..."/>
-    <div style="font-size:0.75rem;color:var(--slate);margin-bottom:1rem;font-weight:300;line-height:1.5">🔒 Votre clé reste dans votre navigateur et n'est jamais stockée. Obtenez-la sur <a href="https://console.anthropic.com" target="_blank" style="color:var(--gold)">console.anthropic.com</a></div>
     <button class="login-btn" onclick="doLogin()">Accéder à mon espace →</button>
     <div class="login-error" id="loginError">Code ou mot de passe incorrect.</div>
   </div>
@@ -403,16 +400,8 @@ function doLogin() {
   const code = document.getElementById("loginCode").value.trim().toUpperCase();
   const pass = document.getElementById("loginPass").value.trim();
   const acc = ACCOUNTS[code];
-  const apiKey = document.getElementById("loginApiKey").value.trim();
   if (acc && acc.password === pass) {
-    if (!apiKey || !apiKey.startsWith("sk-")) {
-      const err = document.getElementById("loginError");
-      err.textContent = "Clé API invalide. Elle doit commencer par sk-ant-...";
-      err.style.display = "block";
-      setTimeout(() => err.style.display = "none", 4000);
-      return;
-    }
-    currentCompany = { code, ...acc, apiKey };
+    currentCompany = { code, ...acc };
     document.getElementById("loginScreen").style.display = "none";
     document.getElementById("app").style.display = "flex";
     document.getElementById("companyName").textContent = acc.name;
@@ -430,7 +419,6 @@ function doLogout() {
   document.getElementById("app").style.display = "none";
   document.getElementById("loginCode").value = "";
   document.getElementById("loginPass").value = "";
-  document.getElementById("loginApiKey").value = "";
 }
 
 document.getElementById("loginPass").addEventListener("keydown", e => { if(e.key==="Enter") doLogin(); });
@@ -869,14 +857,9 @@ async function runTool(toolId) {
   }
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/.netlify/functions/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': currentCompany.apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1500,
