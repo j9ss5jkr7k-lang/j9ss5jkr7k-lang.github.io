@@ -326,6 +326,13 @@
       transition: background 0.3s;
       position: relative;
       overflow: hidden;
+      color: inherit;
+      display: block;
+      cursor: pointer;
+      border: none;
+      text-align: left;
+      width: 100%;
+      font-family: inherit;
     }
     .service-card::after {
       content: '';
@@ -339,6 +346,95 @@
     }
     .service-card:hover { background: rgba(26,79,191,0.08); }
     .service-card:hover::after { transform: scaleX(1); }
+    .card-link {
+      margin-top: 1.2rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.04em;
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 0.25s, transform 0.25s;
+      display: block;
+    }
+    .service-card:hover .card-link { opacity: 1; transform: translateX(0); }
+
+    /* ── SIDEBAR DRAWER ── */
+    .drawer-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    .drawer-overlay.open { opacity: 1; pointer-events: all; }
+    .drawer {
+      position: fixed;
+      top: 0; right: 0;
+      width: min(520px, 100vw);
+      height: 100vh;
+      background: var(--navy-mid);
+      border-left: 1px solid var(--border);
+      z-index: 201;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer-header {
+      padding: 2rem 2.5rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      position: sticky; top: 0;
+      background: var(--navy-mid);
+      z-index: 1;
+    }
+    .drawer-icon {
+      font-size: 1.6rem;
+      background: rgba(201,168,76,0.1);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 8px;
+      width: 52px; height: 52px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-bottom: 0.8rem;
+    }
+    .drawer-title { font-family: 'DM Serif Display', serif; font-size: 1.6rem; line-height: 1.15; letter-spacing: -0.01em; }
+    .drawer-title em { font-style: italic; color: var(--gold); }
+    .drawer-close {
+      background: none; border: 1px solid var(--border); color: var(--slate);
+      width: 36px; height: 36px; border-radius: 4px; font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.2s;
+    }
+    .drawer-close:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
+    .drawer-body { padding: 2rem 2.5rem; flex: 1; }
+    .drawer-intro { color: var(--slate); font-size: 0.95rem; line-height: 1.7; font-weight: 300; margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+    .drawer-section-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--gold); font-weight: 600; margin-bottom: 1rem; }
+    .drawer-features { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+    .drawer-feature { display: flex; gap: 1rem; align-items: flex-start; padding: 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 6px; transition: border-color 0.2s; }
+    .drawer-feature:hover { border-color: rgba(201,168,76,0.25); }
+    .df-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .df-title { font-weight: 600; font-size: 0.88rem; margin-bottom: 0.25rem; }
+    .df-desc { color: var(--slate); font-size: 0.81rem; line-height: 1.6; font-weight: 300; }
+    .drawer-steps { display: flex; flex-direction: column; margin-bottom: 2rem; }
+    .drawer-step { display: flex; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+    .drawer-step:first-child { border-top: 1px solid var(--border); }
+    .ds-num { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--gold); min-width: 2rem; line-height: 1; }
+    .ds-title { font-weight: 600; font-size: 0.88rem; margin-bottom: 0.2rem; }
+    .ds-desc { color: var(--slate); font-size: 0.81rem; line-height: 1.55; font-weight: 300; }
+    .drawer-kpis { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 2rem; }
+    .drawer-kpi { background: rgba(255,255,255,0.02); padding: 1.2rem 0.6rem; text-align: center; }
+    .dk-num { font-family: 'DM Serif Display', serif; font-size: 1.7rem; color: var(--gold); line-height: 1; margin-bottom: 0.3rem; }
+    .dk-label { color: var(--slate); font-size: 0.71rem; line-height: 1.4; font-weight: 300; }
+    .drawer-cta { display: block; background: var(--gold); color: var(--navy); text-align: center; padding: 1rem; border-radius: 3px; font-weight: 600; font-size: 0.95rem; text-decoration: none; transition: background 0.2s; margin-bottom: 2rem; }
+    .drawer-cta:hover { background: var(--gold-light); }
 
     .service-icon {
       width: 48px; height: 48px;
@@ -734,35 +830,69 @@
     <p class="section-sub">Des solutions IA sur mesure, adaptées à votre secteur et à vos objectifs business réels.</p>
   </div>
   <div class="services-grid reveal">
-    <div class="service-card">
+    <button class="service-card" onclick="openDrawer('automatisation')">
       <div class="service-icon">⚙️</div>
       <h3>Automatisation des processus</h3>
       <p>Identifiez et éliminez les tâches répétitives grâce à des workflows IA intelligents. Gagnez du temps, réduisez les erreurs humaines.</p>
-    </div>
-    <div class="service-card">
+      <div class="card-link">En savoir plus →</div>
+    </button>
+    <button class="service-card" onclick="openDrawer('bi')">
       <div class="service-icon">📊</div>
       <h3>Analyse & Business Intelligence</h3>
       <p>Exploitez vos données avec des tableaux de bord IA en temps réel. Prenez des décisions stratégiques basées sur la donnée, pas l'intuition.</p>
-    </div>
-    <div class="service-card">
+      <div class="card-link">En savoir plus →</div>
+    </button>
+    <button class="service-card" onclick="openDrawer('contenu')">
       <div class="service-icon">✍️</div>
       <h3>Création de contenu assistée</h3>
       <p>Multipliez votre production de contenu marketing — textes, visuels, vidéos — avec des pipelines IA adaptés à votre identité de marque.</p>
-    </div>
-    <div class="service-card">
+      <div class="card-link">En savoir plus →</div>
+    </button>
+    <button class="service-card" onclick="openDrawer('agents')">
       <div class="service-icon">🤖</div>
       <h3>Agents & Assistants IA</h3>
       <p>Déployez des assistants intelligents pour vos équipes : support client, prospection, RH. Disponibles 24h/24, formés à votre contexte.</p>
-    </div>
-    <div class="service-card">
+      <div class="card-link">En savoir plus →</div>
+    </button>
+    <button class="service-card" onclick="openDrawer('predictif')">
       <div class="service-icon">🎯</div>
       <h3>Marketing prédictif</h3>
       <p>Anticipez les comportements de vos clients et personnalisez vos campagnes à grande échelle grâce aux modèles prédictifs.</p>
-    </div>
-    <div class="service-card">
+      <div class="card-link">En savoir plus →</div>
+    </button>
+    <button class="service-card" onclick="openDrawer('formation')">
       <div class="service-icon">🏗️</div>
       <h3>Formation & Accompagnement</h3>
       <p>Formez vos équipes aux usages IA concrets. Nous construisons une culture IA pérenne au sein de votre organisation.</p>
+      <div class="card-link">En savoir plus →</div>
+    </button>
+  </div>
+
+  <!-- DRAWER OVERLAY -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+  <!-- DRAWER PANEL -->
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div>
+        <div class="drawer-icon" id="drawerIcon"></div>
+        <div class="drawer-title" id="drawerTitle"></div>
+      </div>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-body">
+      <p class="drawer-intro" id="drawerIntro"></p>
+
+      <div class="drawer-section-label">Ce que nous faisons</div>
+      <div class="drawer-features" id="drawerFeatures"></div>
+
+      <div class="drawer-section-label">En 4 étapes</div>
+      <div class="drawer-steps" id="drawerSteps"></div>
+
+      <div class="drawer-section-label">Résultats clients</div>
+      <div class="drawer-kpis" id="drawerKpis"></div>
+
+      <a href="#contact" class="drawer-cta" onclick="closeDrawer()">Démarrer ce service →</a>
     </div>
   </div>
 </section>
@@ -1001,10 +1131,148 @@
     step.addEventListener('mouseenter', () => step.style.opacity = '1');
     step.addEventListener('mouseleave', () => step.style.opacity = '0.4');
   });
-
-  // First step highlighted by default
   const firstStep = document.querySelector('.step');
   if (firstStep) firstStep.style.opacity = '1';
+
+  // ── DRAWER DATA ──
+  const services = {
+    automatisation: {
+      icon: "⚙️",
+      title: "Automatisation des <em>processus</em>",
+      intro: "Nous identifions et automatisons vos tâches répétitives grâce à des agents IA intelligents. Vos équipes se concentrent sur ce qui crée vraiment de la valeur.",
+      features: [
+        ["🔍","Cartographie des processus","Identification précise des tâches chronophages : saisie de données, relances, reporting, tri d’emails, génération de documents..."],
+        ["🔗","Intégration multi-outils","Connexion de vos logiciels existants (CRM, ERP, email, Slack, Notion...) via des workflows automatisés sans migration."],
+        ["🤖","Agents IA autonomes","Agents capables de prendre des décisions, d’envoyer des messages et mettre à jour des bases de données sans intervention humaine."],
+        ["📋","Monitoring & alertes","Tableau de bord en temps réel. Alertes immédiates en cas d’anomalie. Vous restez toujours maître du processus."]
+      ],
+      steps: [
+        ["Audit des processus","Entretiens avec vos équipes, cartographie des flux, identification des 3 à 5 automatisations à plus fort impact."],
+        ["Construction des workflows","Développement et test dans un environnement sandbox. Validation avec vos équipes avant mise en production."],
+        ["Déploiement & formation","Mise en production progressive, formation de vos référents internes, documentation complète."],
+        ["Suivi mensuel continu","Rapport d’économies de temps, optimisation des workflows, ajout de nouvelles automatisations."]
+      ],
+      kpis: [["62h","Économisées / semaine / équipe"],["-89%","Temps de traitement réduit"],["3 sem.","Délai de déploiement"]]
+    },
+    bi: {
+      icon: "📊",
+      title: "Analyse & <em>Business Intelligence</em>",
+      intro: "Transformez vos données brutes en insights actionnables. Tableaux de bord IA en temps réel, prévisions et recommandations stratégiques basées sur la donnée.",
+      features: [
+        ["📥","Centralisation des données","Connexion de toutes vos sources (CRM, analytics, comptabilité, réseaux sociaux...) dans une plateforme unifiée."],
+        ["📈","Dashboards interactifs","Tableaux de bord sur mesure, accessibles depuis n’importe quel appareil, avec les KPIs qui comptent vraiment."],
+        ["🔮","Prévisions IA","Modèles prédictifs qui anticipent vos ventes, votre churn, vos stocks avec des intervalles de confiance clairs."],
+        ["🚨","Alertes intelligentes","Notifications automatiques quand un indicateur dépasse un seuil critique. Réagissez en minutes, pas en jours."]
+      ],
+      steps: [
+        ["Audit data","Recensement de vos sources, évaluation de leur qualité, identification des KPIs stratégiques par département."],
+        ["Architecture & connexions","Mise en place de l’entrepôt de données, connexion des sources, nettoyage et normalisation."],
+        ["Construction des dashboards","Développement itératif avec vos équipes jusqu’à validation complète de l’interface."],
+        ["Formation & autonomie","Formation à la lecture des données, à la création de rapports et à l’interprétation des modèles prédictifs."]
+      ],
+      kpis: [["+128%","Vitesse de décision"],["-61%","Temps en reporting manuel"],["97%","Précision prévisions ventes"]]
+    },
+    contenu: {
+      icon: "✍️",
+      title: "Création de contenu <em>assistée par IA</em>",
+      intro: "Multipliez votre production de contenu marketing sans multiplier vos équipes. Articles, visuels, vidéos, posts réseaux sociaux générés à votre image, à grande échelle.",
+      features: [
+        ["🖊️","Rédaction & copywriting IA","Articles SEO, newsletters, fiches produits, scripts vidéo rédigés dans votre ton, validés par vos équipes."],
+        ["🎨","Génération visuelle","Visuels pour vos réseaux sociaux, bannières publicitaires, illustrations cohérents avec votre charte graphique."],
+        ["🎬","Repurposing vidéo","Transformez un webinar en dizaines de clips courts optimisés pour TikTok, Reels et YouTube Shorts automatiquement."],
+        ["📅","Planning & publication","Calendrier éditorial IA, programmation automatique, analyse des meilleurs créneaux de diffusion par réseau."]
+      ],
+      steps: [
+        ["Brand audit","Analyse de votre identité de marque, ton, audience. Construction du brand prompt qui guide toute la production."],
+        ["Pipeline technique","Mise en place des outils IA, connexion à vos canaux, paramétrage des workflows de validation."],
+        ["Production test & validation","Génération d’un premier lot de 30 à 50 contenus, révision et affinage avec vos équipes."],
+        ["Mise en production","Lancement à plein régime, formation de votre équipe marketing pour piloter le pipeline en autonomie."]
+      ],
+      kpis: [["×8","Volume de contenu produit"],["-70%","Coût par contenu"],["×3","Engagement réseaux sociaux"]]
+    },
+    agents: {
+      icon: "🤖",
+      title: "Agents & <em>Assistants IA</em>",
+      intro: "Déployez des assistants IA intelligents formés à votre contexte d’entreprise. Disponibles 24h/24, capables de gérer support client, prospection, RH et bien plus.",
+      features: [
+        ["💬","Support client intelligent","Agent formé sur vos produits et FAQ. Résout 80% des demandes sans intervention humaine, avec votre ton de marque."],
+        ["📞","Prospection & qualification","Contacte, qualifie et prend des RDV automatiquement. Vos commerciaux reçoivent des leads chauds et qualifiés."],
+        ["👥","Assistant RH","Répond aux questions collaborateurs 24h/24 : congés, politiques internes, onboarding... Sans surcharger votre équipe RH."],
+        ["🧠","Agent de connaissance interne","Connaît tous vos documents internes, procédures, historiques de projets et répond instantanément à vos équipes."]
+      ],
+      steps: [
+        ["Définition du périmètre","Identification des cas d’usage, sources de connaissance, règles d’escalade et indicateurs de performance."],
+        ["Entraînement & personnalisation","Alimentation de l’agent avec vos données, documents, historiques. Tests intensifs sur des scénarios réels."],
+        ["Tests utilisateurs","Phase de tests avec vos équipes internes. Collecte des retours, ajustements fins du comportement."],
+        ["Déploiement & monitoring","Mise en ligne sur vos canaux (site, WhatsApp, Slack...). Dashboard de performance et amélioration continue."]
+      ],
+      kpis: [["80%","Demandes sans humain"],["24/7","Disponibilité totale"],["-65%","Délai de réponse"]]
+    },
+    predictif: {
+      icon: "🎯",
+      title: "Marketing <em>prédictif</em>",
+      intro: "Anticipez les comportements de vos clients avant qu’ils n’agissent. Personnalisez chaque campagne à grande échelle et investissez votre budget là où il convertit.",
+      features: [
+        ["🔬","Segmentation prédictive","Regroupement automatique de vos clients en segments comportementaux évolutifs. Au-delà de la segmentation classique."],
+        ["⏱️","Timing optimal","Identification du meilleur moment pour contacter chaque prospect selon ses patterns d’activité."],
+        ["💌","Personnalisation à l’échelle","Messages personnalisés automatiquement par segment : email, SMS, push, pub. Sans multiplier les équipes."],
+        ["📉","Prédiction du churn","Identifiez les clients sur le point de partir. Déclenchez automatiquement des campagnes de rétention ciblées."]
+      ],
+      steps: [
+        ["Collecte & nettoyage data","Consolidation de vos données clients, nettoyage, déduplication et enrichissement si nécessaire."],
+        ["Entraînement des modèles","Construction des modèles prédictifs sur votre historique. Validation des performances hors échantillon."],
+        ["Connexion aux campagnes","Intégration des prédictions dans vos outils marketing (email, ads, CRM) pour un ciblage temps réel."],
+        ["Optimisation continue","Les modèles s’améliorent avec chaque nouvelle donnée. Performance croissante sans intervention manuelle."]
+      ],
+      kpis: [["×3","Leads qualifiés"],["-48%","Budget gaspillé"],["97%","Précision prédiction churn"]]
+    },
+    formation: {
+      icon: "🏗️",
+      title: "Formation & <em>Accompagnement IA</em>",
+      intro: "Construisez une culture IA durable dans votre organisation. Formez vos équipes aux usages concrets de l’IA et créez les compétences internes qui pérennisent vos investissements.",
+      features: [
+        ["🎓","Formations par métier","Programmes pour les équipes marketing, commerciales, RH, finance, support — adaptés aux outils de chaque équipe."],
+        ["🛠️","Ateliers pratiques","Sessions hands-on où chaque participant repart avec des outils qu’il utilise dès le lendemain. Pas de théorie abstraite."],
+        ["📚","Documentation interne","Création de votre base de connaissance IA interne : guides, prompts validés, bonnes pratiques propres à votre secteur."],
+        ["🌱","Programme de champions IA","Réseau de référents IA dans chaque département pour assurer la diffusion et l’adoption en profondeur."]
+      ],
+      steps: [
+        ["Diagnostic des équipes","Évaluation du niveau IA actuel par département, identification des cas d’usage prioritaires."],
+        ["Sessions de formation","Ateliers pratiques par groupe de 6 à 15 personnes. 2 à 3 sessions par département, espacées pour la mise en pratique."],
+        ["Formation des champions","Programme approfondi pour les référents IA. Ils deviennent vos multiplicateurs internes de compétences."],
+        ["Suivi & coaching","Sessions de suivi individuelles, réponse aux blocages, ajustement du programme selon les retours du terrain."]
+      ],
+      kpis: [["94%","Opérationnels dès J+1"],["×4","Adoption outils IA"],["6 mois","Vers l’autonomie totale"]]
+    }
+  };
+
+  function openDrawer(id) {
+    const s = services[id];
+    if (!s) return;
+    document.getElementById('drawerIcon').textContent = s.icon;
+    document.getElementById('drawerTitle').innerHTML = s.title;
+    document.getElementById('drawerIntro').textContent = s.intro;
+    document.getElementById('drawerFeatures').innerHTML = s.features.map(([ic,t,d]) =>
+      `<div class="drawer-feature"><div class="df-icon">${ic}</div><div><div class="df-title">${t}</div><div class="df-desc">${d}</div></div></div>`
+    ).join('');
+    document.getElementById('drawerSteps').innerHTML = s.steps.map(([t,d],i) =>
+      `<div class="drawer-step"><div class="ds-num">0${i+1}</div><div><div class="ds-title">${t}</div><div class="ds-desc">${d}</div></div></div>`
+    ).join('');
+    document.getElementById('drawerKpis').innerHTML = s.kpis.map(([n,l]) =>
+      `<div class="drawer-kpi"><div class="dk-num">${n}</div><div class="dk-label">${l}</div></div>`
+    ).join('');
+    document.getElementById('drawer').classList.add('open');
+    document.getElementById('drawerOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    document.getElementById('drawer').classList.remove('open');
+    document.getElementById('drawerOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
 </script>
 
 </body>
