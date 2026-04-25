@@ -5,906 +5,1122 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>NovaMind — Espace Client</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --navy:#0B1629;--navy-mid:#152238;--navy-light:#1E3150;
-  --blue:#1A4FBF;--blue-light:#2563EB;
-  --gold:#C9A84C;--gold-light:#E5C56A;
-  --slate:#8A9BB4;--slate-light:#B0BFD4;
-  --white:#FFFFFF;--border:rgba(255,255,255,0.07);
-  --green:#4ade80;--red:#f87171;
-  --sidebar-w:260px;
+  --bg:#080C14;--bg2:#0D1320;--bg3:#111827;--bg4:#1a2234;
+  --gold:#D4A843;--gold2:#F0C866;--gold-dim:rgba(212,168,67,0.15);
+  --blue:#3B7BF5;--blue-dim:rgba(59,123,245,0.12);
+  --slate:#64748B;--slate2:#94A3B8;--slate3:#CBD5E1;
+  --white:#F8FAFC;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);
+  --green:#22C55E;--red:#EF4444;--orange:#F97316;--purple:#8B5CF6;
+  --topbar:56px;--sidebar:72px;
+  --radius:10px;
 }
-html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);overflow:hidden}
+html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--white);overflow:hidden;font-size:14px}
 
-/* ═══════════════════════════════
-   LOGIN SCREEN
-═══════════════════════════════ */
+/* ═══ SCROLLBAR ═══ */
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
+
+/* ═══ LOGIN ═══ */
 #loginScreen{
-  position:fixed;inset:0;z-index:1000;
+  position:fixed;inset:0;z-index:999;
   display:flex;align-items:center;justify-content:center;
-  background:var(--navy);
+  background:var(--bg);
 }
-#loginScreen::before{
-  content:'';position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 60% 60% at 30% 40%,rgba(26,79,191,0.18) 0%,transparent 70%),
-    radial-gradient(ellipse 40% 40% at 80% 70%,rgba(201,168,76,0.08) 0%,transparent 60%);
+.login-glow{
+  position:absolute;width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(212,168,67,0.06) 0%,transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  pointer-events:none;
 }
-#loginScreen .grid{
+.login-grid{
   position:absolute;inset:0;
-  background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
-  background-size:60px 60px;
+  background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);
+  background-size:40px 40px;
 }
-.login-box{
-  position:relative;z-index:2;
-  width:420px;
-  background:var(--navy-mid);
-  border:1px solid var(--border);
-  border-radius:8px;
-  padding:3rem;
-  animation:fadeUp 0.6s ease both;
+.login-card{
+  position:relative;z-index:2;width:440px;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:16px;padding:3rem;
+  box-shadow:0 0 0 1px rgba(212,168,67,0.05),0 40px 80px rgba(0,0,0,0.4);
+  animation:fadeUp 0.5s ease both;
 }
-.login-logo{
-  font-family:'DM Serif Display',serif;font-size:1.8rem;
-  text-align:center;margin-bottom:0.5rem;
+.login-eyebrow{
+  font-family:'Syne',sans-serif;font-size:0.65rem;font-weight:600;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);
+  margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;
 }
-.login-logo span{color:var(--gold)}
-.login-sub{text-align:center;color:var(--slate);font-size:0.85rem;margin-bottom:2.5rem;font-weight:300}
-.login-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--slate);font-weight:600;margin-bottom:0.5rem;display:block}
-.login-input{
-  width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);
-  border-radius:4px;padding:0.85rem 1rem;color:var(--white);
-  font-family:'DM Sans',sans-serif;font-size:0.92rem;margin-bottom:1.2rem;
-  transition:border-color 0.2s;outline:none;
+.login-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold)}
+.login-title{
+  font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;
+  line-height:1.1;margin-bottom:0.5rem;
 }
-.login-input:focus{border-color:rgba(201,168,76,0.5)}
+.login-title span{color:var(--gold)}
+.login-sub{color:var(--slate2);font-size:0.85rem;margin-bottom:2.5rem;font-weight:300;line-height:1.6}
+.field{margin-bottom:1.2rem}
+.field-label{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--slate);margin-bottom:0.5rem;display:block}
+.field-input{
+  width:100%;background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:0.8rem 1rem;color:var(--white);
+  font-family:'Inter',sans-serif;font-size:0.88rem;outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;
+}
+.field-input:focus{border-color:rgba(212,168,67,0.4);box-shadow:0 0 0 3px rgba(212,168,67,0.06)}
 .login-btn{
-  width:100%;background:var(--gold);color:var(--navy);border:none;
-  padding:0.95rem;border-radius:4px;font-weight:600;font-size:0.95rem;
-  cursor:pointer;transition:background 0.2s;font-family:'DM Sans',sans-serif;
-  margin-top:0.5rem;
+  width:100%;background:var(--gold);color:#000;border:none;
+  padding:0.9rem;border-radius:8px;font-weight:700;font-size:0.9rem;
+  cursor:pointer;transition:all 0.2s;font-family:'Syne',sans-serif;
+  letter-spacing:0.05em;margin-top:0.5rem;
 }
-.login-btn:hover{background:var(--gold-light)}
+.login-btn:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(212,168,67,0.3)}
 .login-error{
-  background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);
-  color:#f87171;font-size:0.82rem;padding:0.7rem 1rem;border-radius:4px;
+  background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);
+  color:#f87171;font-size:0.8rem;padding:0.7rem 1rem;border-radius:8px;
   margin-top:1rem;text-align:center;display:none;
 }
+.login-demo{
+  margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);
+  font-size:0.75rem;color:var(--slate);text-align:center;
+}
+.login-demo strong{color:var(--slate2)}
 
-/* ═══════════════════════════════
-   APP LAYOUT
-═══════════════════════════════ */
+/* ═══ APP SHELL ═══ */
 #app{display:none;height:100vh;flex-direction:column}
 
 /* TOP BAR */
 .topbar{
-  height:58px;min-height:58px;
+  height:var(--topbar);min-height:var(--topbar);
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 1.5rem;
-  background:var(--navy-mid);border-bottom:1px solid var(--border);
-  flex-shrink:0;
+  padding:0 1.5rem 0 1rem;
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  flex-shrink:0;gap:1rem;z-index:50;
 }
-.topbar-logo{font-family:'DM Serif Display',serif;font-size:1.3rem}
+.topbar-left{display:flex;align-items:center;gap:1.5rem}
+.topbar-logo{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:-0.01em;white-space:nowrap}
 .topbar-logo span{color:var(--gold)}
-.topbar-right{display:flex;align-items:center;gap:1rem}
-.company-badge{
-  display:flex;align-items:center;gap:0.6rem;
-  font-size:0.82rem;color:var(--slate);
+.topbar-divider{width:1px;height:20px;background:var(--border2)}
+.topbar-breadcrumb{font-size:0.8rem;color:var(--slate);display:flex;align-items:center;gap:0.5rem}
+.topbar-breadcrumb strong{color:var(--slate3);font-weight:500}
+.topbar-right{display:flex;align-items:center;gap:0.75rem}
+.status-pill{
+  display:flex;align-items:center;gap:0.45rem;
+  font-size:0.75rem;color:var(--slate2);
+  background:var(--bg3);border:1px solid var(--border);
+  padding:0.35rem 0.75rem;border-radius:20px;
 }
-.company-dot{
-  width:8px;height:8px;border-radius:50%;background:var(--green);
-  animation:pulse 2s infinite;
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.plan-badge{
+  font-size:0.7rem;font-weight:700;font-family:'Syne',sans-serif;
+  background:var(--gold-dim);color:var(--gold);border:1px solid rgba(212,168,67,0.2);
+  padding:0.3rem 0.7rem;border-radius:20px;letter-spacing:0.05em;
 }
-.logout-btn{
-  background:none;border:1px solid var(--border);color:var(--slate);
-  padding:0.4rem 0.9rem;border-radius:3px;font-size:0.8rem;cursor:pointer;
-  transition:all 0.2s;font-family:'DM Sans',sans-serif;
+.topbar-btn{
+  background:none;border:1px solid var(--border);color:var(--slate2);
+  padding:0.4rem 0.9rem;border-radius:6px;font-size:0.78rem;cursor:pointer;
+  transition:all 0.2s;font-family:'Inter',sans-serif;white-space:nowrap;
 }
-.logout-btn:hover{color:var(--white);border-color:rgba(255,255,255,0.2)}
+.topbar-btn:hover{color:var(--white);border-color:var(--border2);background:var(--bg3)}
 
-/* MAIN AREA */
-.main{display:flex;flex:1;overflow:hidden}
+/* ═══ BODY ═══ */
+.app-body{display:flex;flex:1;overflow:hidden}
 
-/* SIDEBAR */
+/* ═══ SIDEBAR ═══ */
 .sidebar{
-  width:var(--sidebar-w);min-width:var(--sidebar-w);
-  background:var(--navy-mid);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;overflow-y:auto;
-  transition:width 0.3s;
-}
-.sidebar-section-label{
-  font-size:0.65rem;text-transform:uppercase;letter-spacing:0.14em;
-  color:var(--slate);font-weight:600;padding:1.2rem 1.2rem 0.5rem;
-}
-.nav-item{
-  display:flex;align-items:center;gap:0.75rem;
-  padding:0.75rem 1.2rem;cursor:pointer;
-  border-left:2px solid transparent;
-  transition:all 0.2s;color:var(--slate-light);font-size:0.88rem;
+  width:var(--sidebar);min-width:var(--sidebar);
+  background:var(--bg2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;
+  padding:0.75rem 0;gap:0.25rem;overflow:hidden;
+  transition:width 0.3s ease;
   position:relative;
 }
-.nav-item:hover{background:rgba(255,255,255,0.04);color:var(--white)}
-.nav-item.active{
-  background:rgba(201,168,76,0.07);color:var(--white);
-  border-left-color:var(--gold);
-}
-.nav-icon{font-size:1rem;width:1.2rem;text-align:center;flex-shrink:0}
-.nav-label{flex:1}
-.nav-badge{
-  font-size:0.65rem;background:var(--gold);color:var(--navy);
-  padding:0.15rem 0.45rem;border-radius:10px;font-weight:600;
-}
-.sidebar-divider{height:1px;background:var(--border);margin:0.5rem 0}
+.sidebar:hover{width:220px}
+.sidebar:hover .nav-label{opacity:1;transform:translateX(0)}
+.sidebar:hover .nav-item{justify-content:flex-start;padding:0 1rem}
 
-/* WORKSPACE */
-.workspace{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--navy)}
+.nav-item{
+  width:calc(100% - 12px);display:flex;align-items:center;gap:0.75rem;
+  padding:0 0.75rem;height:42px;border-radius:8px;cursor:pointer;
+  border:none;background:none;color:var(--slate2);font-family:'Inter',sans-serif;
+  transition:all 0.2s;white-space:nowrap;overflow:hidden;justify-content:center;
+  position:relative;
+}
+.nav-item:hover{background:var(--bg3);color:var(--white)}
+.nav-item.active{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(212,168,67,0.15)}
+.nav-icon{font-size:1.1rem;flex-shrink:0;width:20px;text-align:center}
+.nav-label{font-size:0.82rem;font-weight:500;opacity:0;transform:translateX(-8px);transition:all 0.25s;white-space:nowrap}
+.sidebar:hover .nav-item{justify-content:flex-start}
+
+.nav-divider{width:40px;height:1px;background:var(--border);margin:0.25rem 0;transition:width 0.3s}
+.sidebar:hover .nav-divider{width:calc(100% - 24px)}
+.nav-section{
+  font-size:0.6rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--slate);padding:0 1rem;opacity:0;transition:opacity 0.2s;
+  width:100%;white-space:nowrap;
+}
+.sidebar:hover .nav-section{opacity:1}
+
+/* ═══ WORKSPACE ═══ */
+.workspace{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
 
 /* WORKSPACE HEADER */
-.ws-header{
-  padding:1.2rem 2rem;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  flex-shrink:0;background:var(--navy);
+.ws-head{
+  padding:1.5rem 2rem 1rem;border-bottom:1px solid var(--border);
+  background:var(--bg);flex-shrink:0;
 }
-.ws-title{font-family:'DM Serif Display',serif;font-size:1.4rem}
+.ws-eyebrow{font-size:0.65rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem}
+.ws-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;line-height:1.1}
 .ws-title em{font-style:italic;color:var(--gold)}
-.ws-subtitle{color:var(--slate);font-size:0.82rem;margin-top:0.15rem}
-.ws-actions{display:flex;gap:0.75rem}
-.ws-btn{
-  background:none;border:1px solid var(--border);color:var(--slate);
-  padding:0.45rem 1rem;border-radius:3px;font-size:0.8rem;cursor:pointer;
-  transition:all 0.2s;font-family:'DM Sans',sans-serif;
+.ws-desc{color:var(--slate2);font-size:0.82rem;margin-top:0.3rem;font-weight:300}
+
+/* TABS */
+.ws-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);background:var(--bg2);padding:0 2rem;flex-shrink:0}
+.ws-tab{
+  padding:0.75rem 1.2rem;font-size:0.8rem;font-weight:500;cursor:pointer;
+  color:var(--slate);border-bottom:2px solid transparent;
+  transition:all 0.2s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;
+  font-family:'Inter',sans-serif;
 }
-.ws-btn:hover{color:var(--white);border-color:rgba(255,255,255,0.2)}
-.ws-btn.primary{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:600}
-.ws-btn.primary:hover{background:var(--gold-light)}
+.ws-tab:hover{color:var(--slate3)}
+.ws-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
 
-/* TOOL AREA */
-.tool-area{flex:1;overflow-y:auto;padding:2rem}
+/* CONTENT */
+.ws-content{flex:1;overflow-y:auto;padding:2rem}
 
-/* WELCOME SCREEN */
-.welcome{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:100%;text-align:center;padding:2rem;
-}
-.welcome-icon{font-size:3rem;margin-bottom:1.5rem;opacity:0.4}
-.welcome h2{font-family:'DM Serif Display',serif;font-size:2rem;margin-bottom:0.75rem;opacity:0.6}
-.welcome p{color:var(--slate);font-size:0.95rem;max-width:400px;line-height:1.7;font-weight:300}
+/* ═══ COMPONENTS ═══ */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
 
-/* TOOL PANELS */
-.tool-panel{display:none;animation:fadeUp 0.3s ease both}
-.tool-panel.active{display:block}
-
-/* INPUT AREA */
-.input-row{display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap}
-.tool-input{
-  flex:1;min-width:200px;background:rgba(255,255,255,0.04);
-  border:1px solid var(--border);border-radius:4px;
-  padding:0.8rem 1rem;color:var(--white);
-  font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;
+.card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.5rem;
   transition:border-color 0.2s;
 }
-.tool-input:focus{border-color:rgba(201,168,76,0.4)}
-.tool-textarea{
-  width:100%;min-height:120px;resize:vertical;
-  background:rgba(255,255,255,0.04);border:1px solid var(--border);
-  border-radius:4px;padding:0.8rem 1rem;color:var(--white);
-  font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;
+.card:hover{border-color:var(--border2)}
+
+.card-sm{padding:1.2rem}
+
+.label{font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem}
+
+.stat-num{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;line-height:1;color:var(--white)}
+.stat-sub{font-size:0.75rem;color:var(--slate);margin-top:0.3rem}
+.stat-change{font-size:0.72rem;padding:0.2rem 0.5rem;border-radius:4px;margin-top:0.4rem;display:inline-block}
+.stat-change.up{background:rgba(34,197,94,0.1);color:#4ade80}
+.stat-change.neutral{background:rgba(148,163,184,0.1);color:var(--slate2)}
+
+/* SAAS CONNECT CARDS */
+.saas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,220px));gap:0.75rem;margin-bottom:1.5rem}
+.saas-card{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.2rem;cursor:pointer;
+  transition:all 0.2s;display:flex;flex-direction:column;gap:0.75rem;
+  position:relative;overflow:hidden;
+}
+.saas-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 60%,rgba(212,168,67,0.03));
+  pointer-events:none;
+}
+.saas-card:hover{border-color:rgba(212,168,67,0.25);background:var(--bg4);transform:translateY(-1px)}
+.saas-card.connected{border-color:rgba(34,197,94,0.25);background:rgba(34,197,94,0.03)}
+.saas-card.connected::after{
+  content:'✓';position:absolute;top:0.6rem;right:0.6rem;
+  width:18px;height:18px;background:var(--green);border-radius:50%;
+  font-size:0.6rem;display:flex;align-items:center;justify-content:center;
+  color:#000;font-weight:800;line-height:18px;text-align:center;
+}
+.saas-logo{font-size:1.5rem}
+.saas-name{font-weight:600;font-size:0.85rem}
+.saas-desc{font-size:0.75rem;color:var(--slate);line-height:1.4;font-weight:300}
+.saas-status{font-size:0.7rem;font-weight:600;padding:0.2rem 0.5rem;border-radius:4px;width:fit-content}
+.saas-status.ok{background:rgba(34,197,94,0.1);color:#4ade80}
+.saas-status.ko{background:rgba(148,163,184,0.08);color:var(--slate)}
+
+/* WORKFLOW BUILDER */
+.workflow{display:flex;align-items:center;gap:0;margin:1.5rem 0;overflow-x:auto;padding-bottom:0.5rem}
+.wf-step{
+  display:flex;flex-direction:column;align-items:center;gap:0.5rem;
+  min-width:100px;
+}
+.wf-node{
+  width:56px;height:56px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;border:1px solid var(--border);
+  background:var(--bg3);transition:all 0.2s;cursor:pointer;
+}
+.wf-node:hover{border-color:var(--gold);background:var(--gold-dim)}
+.wf-node.active{border-color:var(--gold);background:var(--gold-dim);box-shadow:0 0 16px rgba(212,168,67,0.15)}
+.wf-label{font-size:0.7rem;color:var(--slate2);text-align:center;font-weight:500}
+.wf-arrow{color:var(--slate);font-size:1rem;margin:0 -0.5rem;flex-shrink:0;padding-bottom:1.5rem}
+
+/* FORM ELEMENTS */
+.f-label{font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--slate);margin-bottom:0.4rem;display:block}
+.f-input{
+  width:100%;background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:0.7rem 0.9rem;color:var(--white);
+  font-family:'Inter',sans-serif;font-size:0.85rem;outline:none;
   transition:border-color 0.2s;margin-bottom:1rem;
 }
-.tool-textarea:focus{border-color:rgba(201,168,76,0.4)}
-.tool-select{
-  background:rgba(255,255,255,0.04);border:1px solid var(--border);
-  border-radius:4px;padding:0.8rem 1rem;color:var(--white);
-  font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;
-  cursor:pointer;appearance:none;
+.f-input:focus{border-color:rgba(212,168,67,0.4)}
+.f-textarea{
+  width:100%;min-height:100px;resize:vertical;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:0.7rem 0.9rem;color:var(--white);
+  font-family:'Inter',sans-serif;font-size:0.85rem;outline:none;
+  transition:border-color 0.2s;margin-bottom:1rem;
 }
-.tool-select option{background:var(--navy-mid)}
+.f-textarea:focus{border-color:rgba(212,168,67,0.4)}
+.f-select{
+  width:100%;background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:0.7rem 0.9rem;color:var(--white);
+  font-family:'Inter',sans-serif;font-size:0.85rem;outline:none;
+  appearance:none;cursor:pointer;margin-bottom:1rem;
+}
+.f-select option{background:var(--bg3)}
 
-/* RESULT AREA */
-.result-box{
-  background:rgba(255,255,255,0.03);border:1px solid var(--border);
-  border-radius:6px;padding:1.5rem;margin-top:1.5rem;
-  min-height:200px;position:relative;
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  padding:0.6rem 1.2rem;border-radius:8px;font-size:0.82rem;
+  font-weight:600;cursor:pointer;transition:all 0.2s;border:none;
+  font-family:'Inter',sans-serif;white-space:nowrap;
 }
-.result-label{
-  font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;
-  color:var(--gold);font-weight:600;margin-bottom:1rem;
+.btn-gold{background:var(--gold);color:#000}
+.btn-gold:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(212,168,67,0.25)}
+.btn-outline{background:none;border:1px solid var(--border2);color:var(--slate3)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+.btn-ghost{background:none;border:none;color:var(--slate);padding:0.6rem 0.8rem}
+.btn-ghost:hover{color:var(--white);background:var(--bg3)}
+.btn-blue{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(59,123,245,0.2)}
+.btn-blue:hover{background:rgba(59,123,245,0.2)}
+
+/* RESULT BOX */
+.result-box{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.5rem;margin-top:1rem;
+  min-height:150px;position:relative;
 }
 .result-content{
-  color:var(--slate-light);font-size:0.88rem;line-height:1.75;
-  font-weight:300;white-space:pre-wrap;
+  font-size:0.85rem;color:var(--slate3);line-height:1.8;
+  white-space:pre-wrap;font-weight:300;
 }
-.result-placeholder{
-  color:var(--slate);font-size:0.88rem;font-style:italic;opacity:0.5;
+.result-placeholder{color:var(--slate);font-style:italic;opacity:0.5;font-size:0.85rem}
+.copy-btn{
+  position:absolute;top:1rem;right:1rem;
+  background:var(--bg3);border:1px solid var(--border);color:var(--slate);
+  padding:0.3rem 0.7rem;border-radius:6px;font-size:0.72rem;
+  cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;
 }
+.copy-btn:hover{color:var(--white);border-color:var(--border2)}
 
 /* LOADING */
 .loading-dots{display:inline-flex;gap:4px;align-items:center}
-.loading-dots span{
-  width:6px;height:6px;border-radius:50%;background:var(--gold);
-  animation:bounce 1.2s infinite ease-in-out;
-}
+.loading-dots span{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:bounce 1.2s infinite ease-in-out}
 .loading-dots span:nth-child(2){animation-delay:0.2s}
 .loading-dots span:nth-child(3){animation-delay:0.4s}
 
-/* CARDS GRID */
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem}
-.mini-card{
-  background:rgba(255,255,255,0.03);border:1px solid var(--border);
-  border-radius:6px;padding:1.2rem;cursor:pointer;transition:border-color 0.2s;
+/* CHIP SELECTOR */
+.chips{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem}
+.chip{
+  padding:0.4rem 0.9rem;border-radius:20px;font-size:0.78rem;font-weight:500;
+  border:1px solid var(--border);color:var(--slate2);cursor:pointer;
+  transition:all 0.2s;background:none;font-family:'Inter',sans-serif;
 }
-.mini-card:hover{border-color:rgba(201,168,76,0.3)}
-.mini-card.selected{border-color:var(--gold);background:rgba(201,168,76,0.06)}
-.mini-card-icon{font-size:1.4rem;margin-bottom:0.6rem}
-.mini-card-title{font-size:0.85rem;font-weight:600;margin-bottom:0.3rem}
-.mini-card-desc{font-size:0.75rem;color:var(--slate);font-weight:300;line-height:1.5}
+.chip:hover{border-color:var(--border2);color:var(--white)}
+.chip.active{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
 
-/* STATS ROW */
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
-.stat-card{
-  background:rgba(255,255,255,0.03);border:1px solid var(--border);
-  border-radius:6px;padding:1.2rem;text-align:center;
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);
+  z-index:200;display:none;align-items:center;justify-content:center;
 }
-.stat-num{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--gold);line-height:1}
-.stat-lbl{font-size:0.75rem;color:var(--slate);margin-top:0.3rem;font-weight:300}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:16px;
+  padding:2rem;width:480px;max-width:90vw;animation:fadeUp 0.3s ease;
+}
+.modal-title{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:0.5rem}
+.modal-sub{color:var(--slate2);font-size:0.82rem;margin-bottom:1.5rem;line-height:1.6}
+.modal-actions{display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem}
 
-/* CHAT-LIKE MESSAGES */
-.msg-list{display:flex;flex-direction:column;gap:1rem;margin-top:1rem}
-.msg{padding:1rem 1.2rem;border-radius:6px;font-size:0.88rem;line-height:1.7;font-weight:300}
-.msg.user{background:rgba(26,79,191,0.15);border:1px solid rgba(26,79,191,0.2);color:var(--white);align-self:flex-end;max-width:85%}
-.msg.ai{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--slate-light);max-width:100%}
-.msg-role{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:0.4rem}
-.msg.user .msg-role{color:rgba(37,99,235,0.8)}
+/* WELCOME */
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:2rem}
+.welcome-icon{font-size:2.5rem;margin-bottom:1rem;opacity:0.3}
+.welcome h3{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;opacity:0.4;margin-bottom:0.5rem}
+.welcome p{color:var(--slate);font-size:0.85rem;max-width:360px;line-height:1.7;font-weight:300}
+
+/* MSG */
+.msg-list{display:flex;flex-direction:column;gap:0.75rem}
+.msg{padding:0.9rem 1.1rem;border-radius:8px;font-size:0.85rem;line-height:1.7;font-weight:300}
+.msg.user{background:var(--blue-dim);border:1px solid rgba(59,123,245,0.15);color:var(--white);align-self:flex-end;max-width:85%}
+.msg.ai{background:var(--bg3);border:1px solid var(--border);color:var(--slate3)}
+.msg-role{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:0.3rem}
+.msg.user .msg-role{color:rgba(59,123,245,0.7)}
 .msg.ai .msg-role{color:var(--gold)}
-
-/* COPY BTN */
-.copy-btn{
-  position:absolute;top:1rem;right:1rem;
-  background:none;border:1px solid var(--border);color:var(--slate);
-  padding:0.3rem 0.7rem;border-radius:3px;font-size:0.72rem;
-  cursor:pointer;transition:all 0.2s;font-family:'DM Sans',sans-serif;
-}
-.copy-btn:hover{color:var(--white);border-color:rgba(255,255,255,0.2)}
-
-/* SCROLLBAR */
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--navy-light);border-radius:2px}
 
 /* ANIMATIONS */
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.85)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 @keyframes bounce{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes stream{from{opacity:0}to{opacity:1}}
+
+.fade-in{animation:fadeUp 0.3s ease both}
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════
-     LOGIN SCREEN
-══════════════════════════════════ -->
+<!-- ═══════════ LOGIN ═══════════ -->
 <div id="loginScreen">
-  <div class="grid"></div>
-  <div class="login-box">
-    <div class="login-logo">Nova<span>Mind</span></div>
-    <div class="login-sub">Espace client — Connectez-vous pour accéder à vos outils IA</div>
-    <label class="login-label">Code entreprise</label>
-    <input class="login-input" id="loginCode" type="text" placeholder="ex: ACME-2025" autocomplete="off"/>
-    <label class="login-label">Mot de passe</label>
-    <input class="login-input" id="loginPass" type="password" placeholder="••••••••"/>
+  <div class="login-glow"></div>
+  <div class="login-grid"></div>
+  <div class="login-card">
+    <div class="login-eyebrow">Espace Client</div>
+    <div class="login-title">Bienvenue sur<br><span>NovaMind</span></div>
+    <div class="login-sub">Connectez-vous pour accéder à vos outils IA et automatisations.</div>
+    <div class="field">
+      <label class="field-label">Code entreprise</label>
+      <input class="field-input" id="loginCode" type="text" placeholder="ex: ACME-2025" autocomplete="off"/>
+    </div>
+    <div class="field">
+      <label class="field-label">Mot de passe</label>
+      <input class="field-input" id="loginPass" type="password" placeholder="••••••••"/>
+    </div>
     <button class="login-btn" onclick="doLogin()">Accéder à mon espace →</button>
     <div class="login-error" id="loginError">Code ou mot de passe incorrect.</div>
+    <div class="login-demo">Démo : <strong>NOVAMIND-DEMO</strong> / <strong>demo2025</strong></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════
-     APP
-══════════════════════════════════ -->
+<!-- ═══════════ APP ═══════════ -->
 <div id="app" style="display:none;flex-direction:column;height:100vh">
 
   <!-- TOP BAR -->
   <div class="topbar">
-    <div class="topbar-logo">Nova<span>Mind</span></div>
-    <div class="topbar-right">
-      <div class="company-badge">
-        <div class="company-dot"></div>
-        <span id="companyName"></span>
+    <div class="topbar-left">
+      <div class="topbar-logo">Nova<span>Mind</span></div>
+      <div class="topbar-divider"></div>
+      <div class="topbar-breadcrumb" id="breadcrumb">
+        <span>Tableau de bord</span>
       </div>
-      <button class="logout-btn" onclick="doLogout()">Déconnexion</button>
+    </div>
+    <div class="topbar-right">
+      <div class="status-pill">
+        <div class="status-dot"></div>
+        <span id="companyName">—</span>
+      </div>
+      <div class="plan-badge" id="planBadge">PRO</div>
+      <button class="topbar-btn" onclick="doLogout()">Déconnexion</button>
     </div>
   </div>
 
-  <!-- MAIN -->
-  <div class="main">
+  <!-- BODY -->
+  <div class="app-body">
 
     <!-- SIDEBAR -->
     <div class="sidebar">
-      <div class="sidebar-section-label">Services NovaMind</div>
-
-      <div class="nav-item active" onclick="showTool('accueil')" id="nav-accueil">
-        <div class="nav-icon">🏠</div>
-        <div class="nav-label">Tableau de bord</div>
+      <div class="nav-section">Menu</div>
+      <div class="nav-item active" onclick="showTool('accueil')" id="nav-accueil" title="Tableau de bord">
+        <div class="nav-icon">⊞</div><div class="nav-label">Tableau de bord</div>
       </div>
-
-      <div class="sidebar-divider"></div>
-      <div class="sidebar-section-label">Outils IA</div>
-
-      <div class="nav-item" onclick="showTool('automatisation')" id="nav-automatisation">
-        <div class="nav-icon">⚙️</div>
-        <div class="nav-label">Automatisation</div>
+      <div class="nav-divider"></div>
+      <div class="nav-section">Outils IA</div>
+      <div class="nav-item" onclick="showTool('automatisation')" id="nav-automatisation" title="Automatisation">
+        <div class="nav-icon">⚙️</div><div class="nav-label">Automatisation</div>
       </div>
-      <div class="nav-item" onclick="showTool('bi')" id="nav-bi">
-        <div class="nav-icon">📊</div>
-        <div class="nav-label">Business Intelligence</div>
+      <div class="nav-item" onclick="showTool('bi')" id="nav-bi" title="Business Intelligence">
+        <div class="nav-icon">📊</div><div class="nav-label">Business Intelligence</div>
       </div>
-      <div class="nav-item" onclick="showTool('contenu')" id="nav-contenu">
-        <div class="nav-icon">✍️</div>
-        <div class="nav-label">Création de contenu</div>
+      <div class="nav-item" onclick="showTool('contenu')" id="nav-contenu" title="Création de contenu">
+        <div class="nav-icon">✍️</div><div class="nav-label">Création de contenu</div>
       </div>
-      <div class="nav-item" onclick="showTool('agents')" id="nav-agents">
-        <div class="nav-icon">🤖</div>
-        <div class="nav-label">Agents & Assistants</div>
+      <div class="nav-item" onclick="showTool('agents')" id="nav-agents" title="Agents IA">
+        <div class="nav-icon">🤖</div><div class="nav-label">Agents & Assistants</div>
       </div>
-      <div class="nav-item" onclick="showTool('predictif')" id="nav-predictif">
-        <div class="nav-icon">🎯</div>
-        <div class="nav-label">Marketing prédictif</div>
+      <div class="nav-item" onclick="showTool('predictif')" id="nav-predictif" title="Marketing prédictif">
+        <div class="nav-icon">🎯</div><div class="nav-label">Marketing prédictif</div>
       </div>
-      <div class="nav-item" onclick="showTool('formation')" id="nav-formation">
-        <div class="nav-icon">🏗️</div>
-        <div class="nav-label">Formation IA</div>
+      <div class="nav-item" onclick="showTool('formation')" id="nav-formation" title="Formation IA">
+        <div class="nav-icon">🏗️</div><div class="nav-label">Formation IA</div>
       </div>
-
-      <div class="sidebar-divider"></div>
-      <div class="sidebar-section-label">Mon compte</div>
-      <div class="nav-item" onclick="showTool('compte')">
-        <div class="nav-icon">👤</div>
-        <div class="nav-label">Mon profil</div>
+      <div class="nav-divider"></div>
+      <div class="nav-section">Compte</div>
+      <div class="nav-item" onclick="showTool('pricing')" id="nav-pricing" title="Formules & Prix">
+        <div class="nav-icon">💎</div><div class="nav-label">Formules & Prix</div>
+      </div>
+      <div class="nav-item" onclick="showTool('compte')" title="Mon profil">
+        <div class="nav-icon">👤</div><div class="nav-label">Mon profil</div>
       </div>
     </div>
 
     <!-- WORKSPACE -->
     <div class="workspace">
-      <div class="ws-header">
-        <div>
-          <div class="ws-title" id="wsTitle">Tableau de <em>bord</em></div>
-          <div class="ws-subtitle" id="wsSubtitle">Bienvenue dans votre espace NovaMind</div>
-        </div>
-        <div class="ws-actions" id="wsActions"></div>
+      <div class="ws-head" id="wsHead">
+        <div class="ws-eyebrow" id="wsEyebrow">NovaMind</div>
+        <div class="ws-title" id="wsTitle">Tableau de <em>bord</em></div>
+        <div class="ws-desc" id="wsDesc">Vue d'ensemble de votre espace NovaMind</div>
       </div>
-      <div class="tool-area" id="toolArea"></div>
+      <div id="wsTabs" style="display:none" class="ws-tabs"></div>
+      <div class="ws-content" id="wsContent"></div>
     </div>
+  </div>
+</div>
 
+<!-- MODAL CONNEXION SAAS -->
+<div class="modal-overlay" id="saasModal">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Connecter l'application</div>
+    <div class="modal-sub" id="modalSub">Autorisez NovaMind à accéder à votre compte pour activer les automatisations.</div>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-gold" id="modalConfirm">Connecter →</button>
+    </div>
   </div>
 </div>
 
 <script>
-// ══════════════════════════════════
-// COMPTES ENTREPRISES
-// ══════════════════════════════════
+// ═══════════════════════════════════
+// COMPTES
+// ═══════════════════════════════════
 const ACCOUNTS = {
-  "NOVAMIND-DEMO": { password: "demo2025", name: "Compte Démo", plan: "Pro" },
-  "ACME-2025":     { password: "acme@pass", name: "ACME Corp", plan: "Business" },
-  "CLIENT-001":    { password: "client001", name: "Entreprise A", plan: "Starter" },
-  "CLIENT-002":    { password: "client002", name: "Entreprise B", plan: "Pro" },
-  "CLIENT-003":    { password: "client003", name: "Entreprise C", plan: "Business" },
+  "NOVAMIND-DEMO": {password:"demo2025",name:"Compte Démo",plan:"Pro"},
+  "ACME-2025":     {password:"acme@pass",name:"ACME Corp",plan:"Business"},
+  "CLIENT-001":    {password:"client001",name:"Entreprise A",plan:"Starter"},
+  "CLIENT-002":    {password:"client002",name:"Entreprise B",plan:"Pro"},
+  "CLIENT-003":    {password:"client003",name:"Entreprise C",plan:"Business"},
 };
-// ↑ Ajoute ici autant de comptes que tu veux
 
 let currentCompany = null;
+let connectedApps = JSON.parse(localStorage.getItem("nm_apps") || "{}");
+let usage = JSON.parse(localStorage.getItem("nm_usage") || '{"analyses":0,"contenus":0,"requetes":0}');
 
-function doLogin() {
+function doLogin(){
   const code = document.getElementById("loginCode").value.trim().toUpperCase();
   const pass = document.getElementById("loginPass").value.trim();
   const acc = ACCOUNTS[code];
-  if (acc && acc.password === pass) {
-    currentCompany = { code, ...acc };
+  if(acc && acc.password === pass){
+    currentCompany = {code,...acc};
     document.getElementById("loginScreen").style.display = "none";
     document.getElementById("app").style.display = "flex";
     document.getElementById("companyName").textContent = acc.name;
+    document.getElementById("planBadge").textContent = acc.plan.toUpperCase();
     showTool("accueil");
   } else {
     const err = document.getElementById("loginError");
     err.style.display = "block";
-    setTimeout(() => err.style.display = "none", 3000);
+    setTimeout(()=>err.style.display="none",3000);
   }
 }
-
-function doLogout() {
+function doLogout(){
   currentCompany = null;
   document.getElementById("loginScreen").style.display = "flex";
   document.getElementById("app").style.display = "none";
   document.getElementById("loginCode").value = "";
   document.getElementById("loginPass").value = "";
 }
+document.addEventListener("keydown", e=>{
+  if(e.key==="Enter" && document.getElementById("loginScreen").style.display!=="none") doLogin();
+});
 
-document.getElementById("loginPass").addEventListener("keydown", e => { if(e.key==="Enter") doLogin(); });
-document.getElementById("loginCode").addEventListener("keydown", e => { if(e.key==="Enter") doLogin(); });
+// ═══════════════════════════════════
+// SAAS DEFINITIONS
+// ═══════════════════════════════════
+const SAAS = {
+  automatisation: [
+    {id:"make",logo:"⚡",name:"Make",desc:"Créez des scénarios d'automatisation visuels",color:"#6366f1",url:"https://make.com",fields:[{label:"Webhook Make",placeholder:"https://hook.make.com/..."}]},
+    {id:"zapier",logo:"🔗",name:"Zapier",desc:"Connectez vos apps en quelques clics",color:"#ff4a00",url:"https://zapier.com",fields:[{label:"Zapier Webhook",placeholder:"https://hooks.zapier.com/..."}]},
+    {id:"gmail",logo:"📧",name:"Gmail",desc:"Envoi automatique d'emails via Gmail",color:"#EA4335",url:"https://gmail.com",fields:[{label:"Email Gmail",placeholder:"votre@gmail.com"},{label:"Mot de passe app",placeholder:"xxxx xxxx xxxx xxxx"}]},
+    {id:"outlook",logo:"📨",name:"Outlook",desc:"Automatisation email Microsoft",color:"#0078D4",url:"https://outlook.com",fields:[{label:"Email Outlook",placeholder:"votre@outlook.com"}]},
+    {id:"notion",logo:"📝",name:"Notion",desc:"Automatisez vos bases de données Notion",color:"#000",url:"https://notion.so",fields:[{label:"Token API Notion",placeholder:"secret_..."}]},
+    {id:"airtable",logo:"🗃️",name:"Airtable",desc:"Synchronisez et automatisez vos données",color:"#18BFFF",url:"https://airtable.com",fields:[{label:"Clé API Airtable",placeholder:"key..."}]},
+  ],
+  bi: [
+    {id:"gsheets",logo:"📊",name:"Google Sheets",desc:"Analysez vos données en temps réel",color:"#0F9D58",url:"https://sheets.google.com",fields:[{label:"URL du Google Sheet",placeholder:"https://docs.google.com/spreadsheets/..."}]},
+    {id:"ganalytics",logo:"📈",name:"Google Analytics",desc:"Importez vos métriques web",color:"#E37400",url:"https://analytics.google.com",fields:[{label:"ID de propriété GA4",placeholder:"G-XXXXXXXXXX"}]},
+    {id:"hubspot",logo:"🧲",name:"HubSpot",desc:"CRM & pipeline de ventes",color:"#FF7A59",url:"https://hubspot.com",fields:[{label:"Token HubSpot",placeholder:"pat-..."}]},
+    {id:"salesforce",logo:"☁️",name:"Salesforce",desc:"Données CRM enterprise",color:"#00A1E0",url:"https://salesforce.com",fields:[{label:"URL instance",placeholder:"https://monentreprise.salesforce.com"}]},
+    {id:"stripe",logo:"💳",name:"Stripe",desc:"Données de paiement & revenus",color:"#635BFF",url:"https://stripe.com",fields:[{label:"Clé secrète Stripe",placeholder:"sk_live_..."}]},
+    {id:"metabase",logo:"🔭",name:"Metabase",desc:"Tableaux de bord analytiques avancés",color:"#509EE3",url:"https://metabase.com",fields:[{label:"URL Metabase",placeholder:"https://analytics.votresite.com"}]},
+  ],
+  contenu: [
+    {id:"wordpress",logo:"🌐",name:"WordPress",desc:"Publiez automatiquement sur votre blog",color:"#21759B",url:"https://wordpress.com",fields:[{label:"URL WordPress",placeholder:"https://monsite.com"},{label:"Mot de passe app",placeholder:"xxxx xxxx xxxx xxxx"}]},
+    {id:"buffer",logo:"📅",name:"Buffer",desc:"Planifiez vos posts réseaux sociaux",color:"#168EEA",url:"https://buffer.com",fields:[{label:"Token API Buffer",placeholder:"..."}]},
+    {id:"hootsuite",logo:"🦉",name:"Hootsuite",desc:"Gestion multi-réseaux sociaux",color:"#000",url:"https://hootsuite.com",fields:[{label:"Token Hootsuite",placeholder:"..."}]},
+    {id:"canva",logo:"🎨",name:"Canva",desc:"Générez des visuels automatiquement",color:"#7D2AE8",url:"https://canva.com",fields:[{label:"Token API Canva",placeholder:"..."}]},
+    {id:"mailchimp",logo:"🐒",name:"Mailchimp",desc:"Envoyez vos newsletters automatiquement",color:"#FFE01B",url:"https://mailchimp.com",fields:[{label:"Clé API Mailchimp",placeholder:"..."}]},
+    {id:"brevo",logo:"📬",name:"Brevo",desc:"Emailing & SMS marketing",color:"#0B996E",url:"https://brevo.com",fields:[{label:"Clé API Brevo",placeholder:"xkeysib-..."}]},
+  ],
+  agents: [
+    {id:"intercom",logo:"💬",name:"Intercom",desc:"Chat client & support automatisé",color:"#1F8DED",url:"https://intercom.com",fields:[{label:"Token Intercom",placeholder:"..."}]},
+    {id:"zendesk",logo:"🎫",name:"Zendesk",desc:"Ticketing & support client",color:"#03363D",url:"https://zendesk.com",fields:[{label:"Sous-domaine Zendesk",placeholder:"monentreprise.zendesk.com"}]},
+    {id:"slack",logo:"💼",name:"Slack",desc:"Assistants IA dans vos canaux Slack",color:"#4A154B",url:"https://slack.com",fields:[{label:"Webhook Slack",placeholder:"https://hooks.slack.com/..."}]},
+    {id:"whatsapp",logo:"📱",name:"WhatsApp Business",desc:"Agent IA sur WhatsApp",color:"#25D366",url:"https://business.whatsapp.com",fields:[{label:"Token WhatsApp Business",placeholder:"..."}]},
+    {id:"teams",logo:"🔷",name:"Microsoft Teams",desc:"Agent IA dans vos équipes",color:"#6264A7",url:"https://teams.microsoft.com",fields:[{label:"Webhook Teams",placeholder:"https://...webhook.office.com/..."}]},
+    {id:"typeform",logo:"📋",name:"Typeform",desc:"Formulaires intelligents avec IA",color:"#262627",url:"https://typeform.com",fields:[{label:"Token Typeform",placeholder:"..."}]},
+  ],
+  predictif: [
+    {id:"meta_ads",logo:"📘",name:"Meta Ads",desc:"Données pub Facebook & Instagram",color:"#1877F2",url:"https://business.facebook.com",fields:[{label:"Token Meta",placeholder:"..."}]},
+    {id:"google_ads",logo:"🔍",name:"Google Ads",desc:"Performance & conversion pub Google",color:"#4285F4",url:"https://ads.google.com",fields:[{label:"ID client Google Ads",placeholder:"XXX-XXX-XXXX"}]},
+    {id:"klaviyo",logo:"📧",name:"Klaviyo",desc:"Segmentation & emailing prédictif",color:"#000",url:"https://klaviyo.com",fields:[{label:"Clé API Klaviyo",placeholder:"pk_..."}]},
+    {id:"segment",logo:"🔀",name:"Segment",desc:"CDP & données comportementales",color:"#52BD95",url:"https://segment.com",fields:[{label:"Write Key Segment",placeholder:"..."}]},
+    {id:"mixpanel",logo:"📉",name:"Mixpanel",desc:"Analyse comportementale avancée",color:"#7856FF",url:"https://mixpanel.com",fields:[{label:"Token Mixpanel",placeholder:"..."}]},
+    {id:"activecampaign",logo:"🎯",name:"ActiveCampaign",desc:"Marketing automation & scoring",color:"#356AE6",url:"https://activecampaign.com",fields:[{label:"URL & Clé API",placeholder:"https://moncompte.api-us1.com"}]},
+  ],
+  formation: [
+    {id:"loom",logo:"🎥",name:"Loom",desc:"Créez des vidéos de formation",color:"#625DF5",url:"https://loom.com",fields:[{label:"Token Loom",placeholder:"..."}]},
+    {id:"notion_wiki",logo:"📚",name:"Notion Wiki",desc:"Base de connaissance formation",color:"#000",url:"https://notion.so",fields:[{label:"Token Notion",placeholder:"secret_..."}]},
+    {id:"slack_training",logo:"💼",name:"Slack",desc:"Notifications de progression",color:"#4A154B",url:"https://slack.com",fields:[{label:"Webhook Slack",placeholder:"https://hooks.slack.com/..."}]},
+    {id:"google_calendar",logo:"📅",name:"Google Calendar",desc:"Planifiez les sessions de formation",color:"#4285F4",url:"https://calendar.google.com",fields:[{label:"ID Calendrier",placeholder:"...@group.calendar.google.com"}]},
+  ],
+};
 
-// ══════════════════════════════════
+// ═══════════════════════════════════
 // NAVIGATION
-// ══════════════════════════════════
-const TOOLS = {
-  accueil: {
-    title: 'Tableau de <em>bord</em>',
-    subtitle: 'Vue d\'ensemble de vos outils NovaMind',
-    actions: '',
-    render: () => `
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-num" id="s1">—</div><div class="stat-lbl">Analyses effectuées</div></div>
-        <div class="stat-card"><div class="stat-num" id="s2">—</div><div class="stat-lbl">Contenus générés</div></div>
-        <div class="stat-card"><div class="stat-num" id="s3">—</div><div class="stat-lbl">Requêtes IA ce mois</div></div>
-      </div>
-      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:1rem">Accès rapide</div>
-      <div class="cards-grid">
-        ${[
-          ["⚙️","Automatisation","Créer un workflow","automatisation"],
-          ["📊","Business Intel.","Analyser des données","bi"],
-          ["✍️","Contenu IA","Générer du contenu","contenu"],
-          ["🤖","Agents IA","Configurer un agent","agents"],
-          ["🎯","Prédictif","Analyser votre audience","predictif"],
-          ["🏗️","Formation","Plan de formation","formation"],
-        ].map(([ic,t,d,id]) => `
-          <div class="mini-card" onclick="showTool('${id}')">
-            <div class="mini-card-icon">${ic}</div>
-            <div class="mini-card-title">${t}</div>
-            <div class="mini-card-desc">${d}</div>
-          </div>`).join('')}
-      </div>
-    `,
-    afterRender: () => {
-      const usage = JSON.parse(localStorage.getItem("nm_usage") || '{"analyses":0,"contenus":0,"requetes":0}');
-      document.getElementById("s1").textContent = usage.analyses;
-      document.getElementById("s2").textContent = usage.contenus;
-      document.getElementById("s3").textContent = usage.requetes;
-    }
-  },
+// ═══════════════════════════════════
+const TOOLS_META = {
+  accueil:       {eyebrow:"NovaMind",title:'Tableau de <em>bord</em>',desc:"Vue d'ensemble de votre espace NovaMind",tabs:[]},
+  automatisation:{eyebrow:"Outil IA",title:'Automatisation des <em>processus</em>',desc:"Connectez vos apps et automatisez vos tâches répétitives",tabs:["Connexions","Générateur IA","Workflows actifs"]},
+  bi:            {eyebrow:"Outil IA",title:'Analyse & <em>Business Intelligence</em>',desc:"Connectez vos sources de données et obtenez des insights IA",tabs:["Connexions","Analyser avec l'IA","Rapports"]},
+  contenu:       {eyebrow:"Outil IA",title:'Création de contenu <em>assistée</em>',desc:"Connectez vos canaux de publication et générez du contenu",tabs:["Connexions","Générer du contenu","Calendrier"]},
+  agents:        {eyebrow:"Outil IA",title:'Agents & <em>Assistants IA</em>',desc:"Déployez des agents intelligents sur vos canaux clients",tabs:["Connexions","Configurer l'agent","Tester"]},
+  predictif:     {eyebrow:"Outil IA",title:'Marketing <em>prédictif</em>',desc:"Connectez vos sources et anticipez les comportements clients",tabs:["Connexions","Analyser","Segments"]},
+  formation:     {eyebrow:"Outil IA",title:'Formation & <em>Accompagnement</em>',desc:"Créez des plans de formation IA personnalisés",tabs:["Connexions","Générer un plan","Suivi"]},
+  compte:        {eyebrow:"Mon compte",title:'Mon <em>profil</em>',desc:"Informations de votre compte entreprise",tabs:[]},
+  pricing:       {eyebrow:"Abonnements",title:'Nos <em>formules</em>',desc:"Choisissez le plan adapté à vos besoins",tabs:[]},
+};
 
-  automatisation: {
-    title: 'Automatisation des <em>processus</em>',
-    subtitle: 'Décrivez un processus — l\'IA génère un plan d\'automatisation complet',
-    actions: '',
-    render: () => `
-      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:0.75rem">Type de processus</div>
-      <div class="cards-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));margin-bottom:1.5rem" id="procCards">
-        ${[["📧","Emails & relances"],["📋","Reporting"],["💾","Saisie de données"],["📅","Planification"],["🔔","Notifications"],["🔄","Synchronisation"]].map(([ic,lb]) =>
-          `<div class="mini-card" onclick="selectProc(this,'${lb}')"><div class="mini-card-icon">${ic}</div><div class="mini-card-title">${lb}</div></div>`
-        ).join('')}
-      </div>
-      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:0.75rem">Décrivez votre processus actuel</div>
-      <textarea class="tool-textarea" id="procInput" placeholder="Ex: Chaque lundi matin, mon équipe passe 2h à copier des données depuis Excel vers notre CRM, puis envoie un email de confirmation à chaque client concerné..."></textarea>
-      <div style="display:flex;gap:0.75rem">
-        <select class="tool-select" id="procOutils">
-          <option value="">Outils utilisés...</option>
-          <option>Excel / Google Sheets</option>
-          <option>HubSpot / Salesforce</option>
-          <option>Gmail / Outlook</option>
-          <option>Slack / Teams</option>
-          <option>Notion / Airtable</option>
-          <option>Autre / Logiciel métier</option>
-        </select>
-        <button class="ws-btn primary" onclick="runTool('automatisation')">Générer le plan IA →</button>
-      </div>
-      <div class="result-box" id="result-automatisation">
-        <div class="result-label">Plan d'automatisation</div>
-        <div class="result-content"><span class="result-placeholder">Le plan d\'automatisation apparaîtra ici...</span></div>
-        <button class="copy-btn" onclick="copyResult('result-automatisation')">Copier</button>
-      </div>
-    `
-  },
+let currentTool = "accueil";
+let currentTab = 0;
 
-  bi: {
-    title: 'Analyse & <em>Business Intelligence</em>',
-    subtitle: 'Analysez vos données et obtenez des insights stratégiques instantanément',
-    actions: '',
-    render: () => `
-      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:0.75rem">Type d'analyse</div>
-      <div class="cards-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));margin-bottom:1.5rem">
-        ${[["📈","Analyse des ventes"],["👥","Comportement clients"],["💰","Rentabilité"],["📉","Détection d'anomalies"],["🔮","Prévisions"],["⚡","KPIs critiques"]].map(([ic,lb]) =>
-          `<div class="mini-card" onclick="selectCard(this,'biType','${lb}')"><div class="mini-card-icon">${ic}</div><div class="mini-card-title">${lb}</div></div>`
-        ).join('')}
-      </div>
-      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:0.75rem">Décrivez vos données ou posez votre question</div>
-      <textarea class="tool-textarea" id="biInput" placeholder="Ex: Nos ventes ont baissé de 15% en Q3 par rapport à Q2. Les produits A et B sont touchés mais pas C. Quelle analyse faire et quels KPIs surveiller ?"></textarea>
-      <div style="display:flex;gap:0.75rem">
-        <select class="tool-select" id="biSecteur">
-          <option value="">Votre secteur...</option>
-          <option>E-commerce & Retail</option>
-          <option>SaaS / Tech</option>
-          <option>Finance</option>
-          <option>Industrie</option>
-          <option>Services</option>
-          <option>Santé</option>
-        </select>
-        <button class="ws-btn primary" onclick="runTool('bi')">Analyser →</button>
-      </div>
-      <div class="result-box" id="result-bi">
-        <div class="result-label">Analyse & recommandations</div>
-        <div class="result-content"><span class="result-placeholder">L'analyse apparaîtra ici...</span></div>
-        <button class="copy-btn" onclick="copyResult('result-bi')">Copier</button>
-      </div>
-    `
-  },
+function showTool(id){
+  currentTool = id;
+  currentTab = 0;
+  const meta = TOOLS_META[id];
+  if(!meta) return;
 
-  contenu: {
-    title: 'Création de contenu <em>assistée</em>',
-    subtitle: 'Générez du contenu marketing professionnel adapté à votre marque',
-    actions: '',
-    render: () => `
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
-        <div>
-          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:0.75rem">Type de contenu</div>
-          <select class="tool-select" id="contenuType" style="width:100%">
-            <option value="">Choisir...</option>
-            <option>Article de blog SEO</option>
-            <option>Post LinkedIn</option>
-            <option>Post Instagram</option>
-            <option>Newsletter</option>
-            <option>Script vidéo / YouTube</option>
-            <option>Email marketing</option>
-            <option>Fiche produit</option>
-            <option>Page de vente</option>
-          </select>
-        </div>
-        <div>
-          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:0.75rem">Ton de communication</div>
-          <select class="tool-select" id="contenuTon" style="width:100%">
-            <option>Professionnel & sérieux</option>
-            <option>Inspirant & motivant</option>
-            <option>Friendly & accessible</option>
-            <option>Expert & technique</option>
-            <option>Storytelling</option>
-          </select>
-        </div>
-      </div>
-      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:0.75rem">Sujet & informations clés</div>
-      <textarea class="tool-textarea" id="contenuInput" placeholder="Ex: Article de blog sur l'automatisation marketing IA pour les PME. Points clés : gain de temps, réduction des coûts, exemples concrets. Mot-clé SEO : automatisation marketing PME"></textarea>
-      <div style="display:flex;gap:0.75rem">
-        <input class="tool-input" id="contenuBrand" placeholder="Nom de votre marque (optionnel)" style="max-width:250px"/>
-        <button class="ws-btn primary" onclick="runTool('contenu')">Générer le contenu →</button>
-      </div>
-      <div class="result-box" id="result-contenu">
-        <div class="result-label">Contenu généré</div>
-        <div class="result-content"><span class="result-placeholder">Votre contenu apparaîtra ici...</span></div>
-        <button class="copy-btn" onclick="copyResult('result-contenu')">Copier</button>
-      </div>
-    `
-  },
+  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+  const navEl = document.getElementById("nav-"+id);
+  if(navEl) navEl.classList.add("active");
 
-  agents: {
-    title: 'Agents & <em>Assistants IA</em>',
-    subtitle: 'Configurez et testez votre assistant IA personnalisé',
-    actions: '',
-    render: () => `
-      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:0.75rem">Type d'agent</div>
-      <div class="cards-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));margin-bottom:1.5rem">
-        ${[["💬","Support client"],["📞","Commercial / SDR"],["👥","Assistant RH"],["🧠","Base de connaissance"],["📧","Gestion emails"],["🛒","Assistant achat"]].map(([ic,lb]) =>
-          `<div class="mini-card" onclick="selectCard(this,'agentType','${lb}')"><div class="mini-card-icon">${ic}</div><div class="mini-card-title">${lb}</div></div>`
-        ).join('')}
-      </div>
-      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:0.75rem">Contexte de votre entreprise</div>
-      <textarea class="tool-textarea" id="agentContext" style="min-height:80px" placeholder="Ex: Nous sommes une boutique e-commerce de vêtements. Nos produits sont livrés en 3-5 jours. Notre politique de retour est 30 jours..."></textarea>
-      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:0.75rem;margin-top:1rem">Testez votre agent — posez une question</div>
-      <div style="display:flex;gap:0.75rem;margin-bottom:1rem">
-        <input class="tool-input" id="agentQuestion" placeholder="Ex: Quels sont vos délais de livraison ?" />
-        <button class="ws-btn primary" onclick="runTool('agents')">Envoyer →</button>
-      </div>
-      <div class="result-box" id="result-agents">
-        <div class="result-label">Réponse de votre agent</div>
-        <div class="msg-list" id="agentMessages"><span class="result-placeholder" style="font-size:0.88rem;font-style:italic;color:var(--slate);opacity:0.5">Les échanges avec votre agent apparaîtront ici...</span></div>
-        <button class="copy-btn" onclick="copyResult('result-agents')">Copier</button>
-      </div>
-    `
-  },
+  document.getElementById("wsEyebrow").textContent = meta.eyebrow;
+  document.getElementById("wsTitle").innerHTML = meta.title;
+  document.getElementById("wsDesc").textContent = meta.desc;
+  document.getElementById("breadcrumb").innerHTML = `<span style="color:var(--slate)">Outils</span> <span style="opacity:0.4">›</span> <strong>${meta.title.replace(/<[^>]+>/g,"")}</strong>`;
 
-  predictif: {
-    title: 'Marketing <em>prédictif</em>',
-    subtitle: 'Analysez votre audience et anticipez les comportements clients',
-    actions: '',
-    render: () => `
-      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:0.75rem">Objectif prédictif</div>
-      <div class="cards-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));margin-bottom:1.5rem">
-        ${[["📉","Prédire le churn"],["🛒","Prédire les achats"],["📧","Optimiser l'emailing"],["👥","Segmenter l'audience"],["💰","Valeur client (LTV)"],["⏱️","Meilleur timing"]].map(([ic,lb]) =>
-          `<div class="mini-card" onclick="selectCard(this,'predType','${lb}')"><div class="mini-card-icon">${ic}</div><div class="mini-card-title">${lb}</div></div>`
-        ).join('')}
+  const tabsEl = document.getElementById("wsTabs");
+  if(meta.tabs.length > 0){
+    tabsEl.style.display = "flex";
+    tabsEl.innerHTML = meta.tabs.map((t,i)=>`<button class="ws-tab ${i===0?'active':''}" onclick="showTab(${i},'${id}')">${t}</button>`).join("");
+  } else {
+    tabsEl.style.display = "none";
+  }
+
+  renderContent(id, 0);
+}
+
+function showTab(idx, tool){
+  currentTab = idx;
+  document.querySelectorAll(".ws-tab").forEach((t,i)=>t.classList.toggle("active",i===idx));
+  renderContent(tool||currentTool, idx);
+}
+
+function renderContent(tool, tab){
+  const el = document.getElementById("wsContent");
+  el.innerHTML = "";
+  el.className = "ws-content fade-in";
+
+  if(tool === "accueil")  { el.innerHTML = renderAccueil(); return; }
+  if(tool === "pricing") { el.innerHTML = renderPricing(); return; }
+  if(tool === "compte")  { el.innerHTML = renderCompte(); return; }
+
+  const saas = SAAS[tool];
+  if(tab === 0 && saas) { el.innerHTML = renderConnexions(tool, saas); return; }
+  if(tab === 1) { el.innerHTML = renderAI(tool); return; }
+  if(tab === 2) { el.innerHTML = renderTab3(tool); return; }
+}
+
+// ═══════════════════════════════════
+// RENDER FUNCTIONS
+// ═══════════════════════════════════
+function renderAccueil(){
+  const u = usage;
+  return `
+    <div class="grid-4" style="margin-bottom:1.5rem;max-width:700px">
+      <div class="card card-sm">
+        <div class="label">Analyses</div>
+        <div class="stat-num">${u.analyses}</div>
+        <div class="stat-sub">ce mois</div>
       </div>
-      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:0.75rem">Décrivez votre situation & vos données disponibles</div>
-      <textarea class="tool-textarea" id="predInput" placeholder="Ex: Nous avons 5000 clients actifs. 18% n'ont pas commandé depuis 90 jours. Notre panier moyen est 85€. Nos données incluent : historique d'achat, ouvertures emails, visites site..."></textarea>
-      <div style="display:flex;gap:0.75rem">
-        <select class="tool-select" id="predSecteur">
-          <option value="">Votre secteur...</option>
+      <div class="card card-sm">
+        <div class="label">Contenus générés</div>
+        <div class="stat-num">${u.contenus}</div>
+        <div class="stat-sub">ce mois</div>
+      </div>
+      <div class="card card-sm">
+        <div class="label">Requêtes IA</div>
+        <div class="stat-num">${u.requetes}</div>
+        <div class="stat-sub">total</div>
+      </div>
+      <div class="card card-sm">
+        <div class="label">Apps connectées</div>
+        <div class="stat-num">${Object.keys(connectedApps).length}</div>
+        <div class="stat-sub">intégrations actives</div>
+      </div>
+    </div>
+    <div class="label">Accès rapide</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,200px));gap:0.75rem">
+      ${[
+        ["⚙️","Automatisation","automatisation","Connectez et automatisez"],
+        ["📊","Business Intel.","bi","Analysez vos données"],
+        ["✍️","Contenu IA","contenu","Générez du contenu"],
+        ["🤖","Agents IA","agents","Déployez vos agents"],
+        ["🎯","Prédictif","predictif","Anticipez les comportements"],
+        ["🏗️","Formation","formation","Formez vos équipes"],
+      ].map(([ic,t,id,d])=>`
+        <div class="card card-sm" style="cursor:pointer" onclick="showTool('${id}')">
+          <div style="font-size:1.4rem;margin-bottom:0.75rem">${ic}</div>
+          <div style="font-weight:600;font-size:0.88rem;margin-bottom:0.3rem">${t}</div>
+          <div style="font-size:0.75rem;color:var(--slate);font-weight:300">${d}</div>
+        </div>`).join("")}
+    </div>`;
+}
+
+function renderConnexions(tool, saas){
+  return `
+    <div class="label">Applications disponibles — cliquez pour connecter</div>
+    <div class="saas-grid">
+      ${saas.map(s=>`
+        <div class="saas-card ${connectedApps[s.id]?'connected':''}" onclick="openModal('${s.id}','${tool}')">
+          <div style="display:flex;align-items:center;gap:0.75rem">
+            <div class="saas-logo">${s.logo}</div>
+            <div>
+              <div class="saas-name">${s.name}</div>
+              <div class="saas-status ${connectedApps[s.id]?'ok':'ko'}">${connectedApps[s.id]?'✓ Connecté':'Non connecté'}</div>
+            </div>
+          </div>
+          <div class="saas-desc">${s.desc}</div>
+        </div>`).join("")}
+    </div>
+    <div class="card" style="margin-top:0.5rem">
+      <div class="label">Besoin d'aide pour connecter ?</div>
+      <p style="font-size:0.82rem;color:var(--slate2);line-height:1.7;font-weight:300;margin-bottom:1rem">
+        Nos experts NovaMind peuvent configurer toutes vos intégrations pour vous. 
+        Contactez-nous pour un accompagnement personnalisé.
+      </p>
+      <a href="https://mail.google.com/mail/?view=cm&to=seriess.agency@gmail.com&su=Demande%20de%20connexion%20NovaMind" target="_blank" class="btn btn-outline" style="text-decoration:none">📧 Contacter notre équipe</a>
+    </div>`;
+}
+
+function renderAI(tool){
+  const configs = {
+    automatisation: {
+      label:"Décrivez le processus à automatiser",
+      placeholder:"Ex: Chaque lundi, copier les données du Google Sheet vers HubSpot, puis envoyer un email de confirmation aux clients concernés...",
+      chips:["Emails & relances","Reporting","Saisie de données","Notifications","Synchronisation CRM","Facturation"],
+      chipsKey:"procType",
+      extras:`
+        <label class="f-label">Outils concernés</label>
+        <select class="f-select" id="procOutils">
+          <option value="">Sélectionner...</option>
+          <option>Gmail / Outlook</option><option>Google Sheets</option>
+          <option>HubSpot / Salesforce</option><option>Slack / Teams</option>
+          <option>Notion / Airtable</option><option>Make / Zapier</option>
+        </select>`,
+      btn:"Générer le plan d'automatisation →",
+      resultLabel:"Plan d'automatisation IA"
+    },
+    bi: {
+      label:"Décrivez votre situation ou posez votre question",
+      placeholder:"Ex: Nos ventes ont baissé de 15% en Q3. Les produits A et B sont touchés. Que dois-je analyser et surveiller ?",
+      chips:["Analyse des ventes","Comportement clients","Rentabilité","Détection d'anomalies","Prévisions","KPIs"],
+      chipsKey:"biType",
+      extras:`
+        <label class="f-label">Secteur d'activité</label>
+        <select class="f-select" id="biSecteur">
+          <option>E-commerce</option><option>SaaS / Tech</option><option>Finance</option>
+          <option>Industrie</option><option>Services</option><option>Santé</option>
+        </select>`,
+      btn:"Analyser →",
+      resultLabel:"Analyse & recommandations"
+    },
+    contenu: {
+      label:"Sujet & informations clés",
+      placeholder:"Ex: Article SEO sur l'automatisation marketing pour PME. Points clés : gain de temps, ROI, exemples concrets...",
+      chips:["Article blog SEO","Post LinkedIn","Newsletter","Script vidéo","Email marketing","Page de vente"],
+      chipsKey:"contenuType",
+      extras:`
+        <div class="grid-2">
+          <div>
+            <label class="f-label">Ton</label>
+            <select class="f-select" id="contenuTon">
+              <option>Professionnel & sérieux</option><option>Inspirant</option>
+              <option>Friendly</option><option>Expert & technique</option>
+            </select>
+          </div>
+          <div>
+            <label class="f-label">Marque</label>
+            <input class="f-input" id="contenuBrand" placeholder="Nom de votre marque"/>
+          </div>
+        </div>`,
+      btn:"Générer le contenu →",
+      resultLabel:"Contenu généré"
+    },
+    agents: {
+      label:"Contexte de votre entreprise",
+      placeholder:"Ex: Boutique e-commerce de vêtements. Livraison 3-5 jours. Retours sous 30 jours. Paiements CB, PayPal, Klarna...",
+      chips:["Support client","Commercial / SDR","Assistant RH","Base de connaissance","Gestion emails","Assistant achat"],
+      chipsKey:"agentType",
+      extras:`
+        <label class="f-label">Question test pour votre agent</label>
+        <input class="f-input" id="agentQuestion" placeholder="Ex: Quels sont vos délais de livraison ?"/>`,
+      btn:"Tester l'agent →",
+      resultLabel:"Réponse de votre agent"
+    },
+    predictif: {
+      label:"Décrivez votre situation & données disponibles",
+      placeholder:"Ex: 5000 clients actifs, 18% n'ont pas commandé depuis 90 jours. Panier moyen 85€. Données : historique achat, emails, visites...",
+      chips:["Prédire le churn","Prédire les achats","Segmenter","Valeur client LTV","Optimiser emailing","Timing optimal"],
+      chipsKey:"predType",
+      extras:`
+        <label class="f-label">Secteur</label>
+        <select class="f-select" id="predSecteur">
           <option>E-commerce</option><option>SaaS</option><option>Retail</option>
-          <option>Services</option><option>Finance</option><option>Autre</option>
-        </select>
-        <button class="ws-btn primary" onclick="runTool('predictif')">Analyser & prédire →</button>
-      </div>
-      <div class="result-box" id="result-predictif">
-        <div class="result-label">Analyse prédictive & plan d'action</div>
-        <div class="result-content"><span class="result-placeholder">L'analyse prédictive apparaîtra ici...</span></div>
-        <button class="copy-btn" onclick="copyResult('result-predictif')">Copier</button>
-      </div>
-    `
-  },
+          <option>Services</option><option>Finance</option>
+        </select>`,
+      btn:"Analyser & prédire →",
+      resultLabel:"Analyse prédictive"
+    },
+    formation: {
+      label:"Objectifs & contexte de formation",
+      placeholder:"Ex: Équipe marketing de 8 personnes. Objectif : utiliser l'IA pour créer du contenu et automatiser les reportings. Gain visé : 10h/semaine...",
+      chips:["Marketing","Commercial","RH","Finance","Support client","Direction"],
+      chipsKey:"formEquipe",
+      extras:`
+        <div class="grid-2">
+          <div>
+            <label class="f-label">Niveau actuel</label>
+            <select class="f-select" id="formNiveau">
+              <option>Débutant</option><option>Intermédiaire</option><option>Avancé</option>
+            </select>
+          </div>
+          <div>
+            <label class="f-label">Nombre de personnes</label>
+            <input class="f-input" id="formNombre" type="number" placeholder="Ex: 8"/>
+          </div>
+        </div>`,
+      btn:"Générer le plan de formation →",
+      resultLabel:"Plan de formation personnalisé"
+    },
+  };
 
-  formation: {
-    title: 'Formation & <em>Accompagnement IA</em>',
-    subtitle: 'Créez un plan de formation IA sur mesure pour vos équipes',
-    actions: '',
-    render: () => `
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
-        <div>
-          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:0.75rem">Équipe à former</div>
-          <select class="tool-select" id="formEquipe" style="width:100%">
-            <option value="">Choisir...</option>
-            <option>Équipe Marketing</option>
-            <option>Équipe Commerciale</option>
-            <option>Équipe RH</option>
-            <option>Équipe Finance</option>
-            <option>Équipe Support client</option>
-            <option>Direction / Management</option>
-            <option>Toute l'entreprise</option>
-          </select>
-        </div>
-        <div>
-          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:0.75rem">Niveau actuel en IA</div>
-          <select class="tool-select" id="formNiveau" style="width:100%">
-            <option>Débutant (jamais utilisé l'IA)</option>
-            <option>Intermédiaire (utilise ChatGPT basiquement)</option>
-            <option>Avancé (utilise déjà des outils IA)</option>
-          </select>
-        </div>
-      </div>
-      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:0.75rem">Contexte & objectifs de formation</div>
-      <textarea class="tool-textarea" id="formInput" placeholder="Ex: Notre équipe marketing de 8 personnes doit apprendre à utiliser l'IA pour créer du contenu, analyser les campagnes et automatiser les reportings. Objectif : gagner 10h/semaine par personne."></textarea>
-      <div style="display:flex;gap:0.75rem">
-        <input class="tool-input" id="formNombre" type="number" placeholder="Nombre de personnes" style="max-width:200px"/>
-        <button class="ws-btn primary" onclick="runTool('formation')">Générer le plan →</button>
-      </div>
-      <div class="result-box" id="result-formation">
-        <div class="result-label">Plan de formation personnalisé</div>
-        <div class="result-content"><span class="result-placeholder">Votre plan de formation apparaîtra ici...</span></div>
-        <button class="copy-btn" onclick="copyResult('result-formation')">Copier</button>
-      </div>
-    `
-  },
+  const c = configs[tool];
+  if(!c) return "<div class='welcome'><div class='welcome-icon'>🚧</div><h3>En construction</h3></div>";
 
-  compte: {
-    title: 'Mon <em>profil</em>',
-    subtitle: 'Informations de votre compte entreprise',
-    actions: '',
-    render: () => {
-      const acc = currentCompany || {};
-      return `
-        <div class="stats-row" style="margin-bottom:2rem">
-          <div class="stat-card"><div class="stat-num" style="font-size:1.2rem;font-family:'DM Sans',sans-serif">${acc.name||'—'}</div><div class="stat-lbl">Entreprise</div></div>
-          <div class="stat-card"><div class="stat-num" style="font-size:1.2rem;font-family:'JetBrains Mono',monospace">${acc.code||'—'}</div><div class="stat-lbl">Code d'accès</div></div>
-          <div class="stat-card"><div class="stat-num" style="font-size:1.2rem;font-family:'DM Sans',sans-serif">${acc.plan||'—'}</div><div class="stat-lbl">Plan souscrit</div></div>
-        </div>
-        <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--gold);font-weight:600;margin-bottom:1rem">Services disponibles</div>
-        <div class="cards-grid">
-          ${[["⚙️","Automatisation"],["📊","Business Intelligence"],["✍️","Création contenu"],["🤖","Agents IA"],["🎯","Marketing prédictif"],["🏗️","Formation IA"]].map(([ic,lb]) =>
-            `<div class="mini-card selected"><div class="mini-card-icon">${ic}</div><div class="mini-card-title">${lb}</div><div class="mini-card-desc" style="color:var(--green);font-size:0.72rem">✓ Actif</div></div>`
-          ).join('')}
-        </div>
-      `;
-    }
-  }
-};
-
-let selectedValues = {};
-
-function selectCard(el, key, value) {
-  const parent = el.closest('.cards-grid');
-  parent.querySelectorAll('.mini-card').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedValues[key] = value;
+  return `
+    <div class="label">Type / catégorie</div>
+    <div class="chips" id="chips-${tool}">
+      ${c.chips.map(ch=>`<button class="chip" onclick="selectChip(this,'${c.chipsKey}')">${ch}</button>`).join("")}
+    </div>
+    <label class="f-label">${c.label}</label>
+    <textarea class="f-textarea" id="mainInput" placeholder="${c.placeholder}"></textarea>
+    ${c.extras}
+    <button class="btn btn-gold" onclick="runAI('${tool}')" style="margin-bottom:1.5rem">${c.btn}</button>
+    <div class="result-box" id="resultBox">
+      <div class="label">${c.resultLabel}</div>
+      <div class="result-content" id="resultContent"><span class="result-placeholder">Le résultat apparaîtra ici...</span></div>
+      <button class="copy-btn" onclick="copyResult()">Copier</button>
+    </div>`;
 }
 
-function selectProc(el, value) { selectCard(el, 'procType', value); }
-
-function showTool(id) {
-  const tool = TOOLS[id];
-  if (!tool) return;
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const navEl = document.getElementById('nav-' + id);
-  if (navEl) navEl.classList.add('active');
-  document.getElementById('wsTitle').innerHTML = tool.title;
-  document.getElementById('wsSubtitle').textContent = tool.subtitle;
-  document.getElementById('wsActions').innerHTML = tool.actions;
-  document.getElementById('toolArea').innerHTML = tool.render();
-  if (tool.afterRender) tool.afterRender();
-  selectedValues = {};
+function renderTab3(tool){
+  const msgs = {
+    automatisation: "Vos workflows actifs apparaîtront ici une fois vos automatisations Make/Zapier configurées.",
+    bi: "Vos rapports sauvegardés apparaîtront ici.",
+    contenu: "Votre calendrier éditorial apparaîtra ici.",
+    agents: "Testez votre agent dans l'onglet 'Tester'.",
+    predictif: "Vos segments clients apparaîtront ici.",
+    formation: "Le suivi de progression de vos équipes apparaîtra ici.",
+  };
+  return `<div class="welcome"><div class="welcome-icon">🚀</div><h3>Bientôt disponible</h3><p>${msgs[tool]||""}</p></div>`;
 }
 
-// ══════════════════════════════════
-// IA CLAUDE API
-// ══════════════════════════════════
+function renderPricing(){
+  return `
+    <div style="max-width:900px;margin:0 auto">
+      <div style="text-align:center;margin-bottom:2.5rem">
+        <div class="label" style="justify-content:center;display:flex">Tarification transparente</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:0.5rem">Choisissez votre formule</div>
+        <div style="color:var(--slate2);font-size:0.85rem;font-weight:300">Sans engagement · Résiliable à tout moment</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;align-items:start">
+
+        <!-- TRY -->
+        <div class="card" style="border-color:var(--border2);position:relative">
+          <div style="margin-bottom:1.5rem">
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--slate2);margin-bottom:0.5rem">TRY</div>
+            <div style="font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;line-height:1">4,99€<span style="font-size:0.9rem;font-weight:400;color:var(--slate2)">/mois</span></div>
+            <div style="color:var(--slate);font-size:0.78rem;margin-top:0.4rem;font-weight:300">Idéal pour découvrir NovaMind</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.5rem">
+            ${[
+              ["✓","1 outil IA au choix"],
+              ["✓","50 requêtes IA / mois"],
+              ["✓","2 connexions SaaS"],
+              ["✓","Support par email"],
+              ["✗","Agents IA personnalisés","var(--slate)"],
+              ["✗","Automatisations avancées","var(--slate)"],
+              ["✗","Analyses prédictives","var(--slate)"],
+            ].map(([ic,t,c])=>`
+              <div style="display:flex;align-items:center;gap:0.6rem;font-size:0.82rem;color:${c||'var(--slate3)'}">
+                <span style="font-size:0.75rem;color:${c?'var(--slate)':'var(--green)'}">${ic}</span>${t}
+              </div>`).join("")}
+          </div>
+          <button class="btn btn-outline" style="width:100%;justify-content:center"
+            onclick="window.open('https://mail.google.com/mail/?view=cm&to=seriess.agency@gmail.com&su=Souscription%20Plan%20TRY%20-%204,99€/mois&body=Bonjour,%20je%20souhaite%20souscrire%20au%20plan%20TRY%20à%204,99€/mois.%20%0A%0AEntreprise%20:%20${currentCompany?.name||''}%0ACode%20:%20${currentCompany?.code||''}','_blank')">
+            Commencer l'essai →
+          </button>
+        </div>
+
+        <!-- BUSINESS -->
+        <div class="card" style="border-color:var(--gold);background:linear-gradient(135deg,var(--bg2),rgba(212,168,67,0.04));position:relative">
+          <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:#000;font-size:0.65rem;font-weight:800;font-family:'Syne',sans-serif;letter-spacing:0.1em;padding:0.3rem 0.9rem;border-radius:20px;white-space:nowrap">⭐ POPULAIRE</div>
+          <div style="margin-bottom:1.5rem">
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem">BUSINESS</div>
+            <div style="font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;line-height:1;color:var(--gold)">49,99€<span style="font-size:0.9rem;font-weight:400;color:var(--slate2)">/mois</span></div>
+            <div style="color:var(--slate);font-size:0.78rem;margin-top:0.4rem;font-weight:300">Tout ce qu'il faut pour scaler</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.5rem">
+            ${[
+              "Tous les outils IA (6 modules)",
+              "500 requêtes IA / mois",
+              "Connexions SaaS illimitées",
+              "Automatisation emails & relances",
+              "Création de contenu multi-canal",
+              "Business Intelligence & dashboards",
+              "Agents IA support client",
+              "Marketing prédictif & segmentation",
+              "Support prioritaire sous 24h",
+            ].map(t=>`
+              <div style="display:flex;align-items:center;gap:0.6rem;font-size:0.82rem;color:var(--slate3)">
+                <span style="font-size:0.75rem;color:var(--green)">✓</span>${t}
+              </div>`).join("")}
+          </div>
+          <button class="btn btn-gold" style="width:100%;justify-content:center"
+            onclick="window.open('https://mail.google.com/mail/?view=cm&to=seriess.agency@gmail.com&su=Souscription%20Plan%20BUSINESS%20-%2049,99€/mois&body=Bonjour,%20je%20souhaite%20souscrire%20au%20plan%20BUSINESS%20à%2049,99€/mois.%0A%0AEntreprise%20:%20${currentCompany?.name||''}%0ACode%20:%20${currentCompany?.code||''}','_blank')">
+            Choisir Business →
+          </button>
+        </div>
+
+        <!-- PERSONNALISÉ -->
+        <div class="card" style="border-color:rgba(139,92,246,0.3);background:linear-gradient(135deg,var(--bg2),rgba(139,92,246,0.03));position:relative">
+          <div style="margin-bottom:1.5rem">
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#8B5CF6;margin-bottom:0.5rem">ENTREPRISE</div>
+            <div style="font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;line-height:1">Sur mesure</div>
+            <div style="color:var(--slate);font-size:0.78rem;margin-top:0.4rem;font-weight:300">Pour les grandes organisations</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.5rem">
+            ${[
+              "Requêtes IA illimitées",
+              "Intégrations sur mesure",
+              "Agents IA dédiés & configurés",
+              "Automatisations complexes",
+              "Formation équipes incluse",
+              "Tableau de bord personnalisé",
+              "Account manager dédié",
+              "SLA & support 7j/7",
+              "Onboarding personnalisé",
+            ].map(t=>`
+              <div style="display:flex;align-items:center;gap:0.6rem;font-size:0.82rem;color:var(--slate3)">
+                <span style="font-size:0.75rem;color:#8B5CF6">✓</span>${t}
+              </div>`).join("")}
+          </div>
+          <button class="btn" style="width:100%;justify-content:center;background:rgba(139,92,246,0.15);color:#8B5CF6;border:1px solid rgba(139,92,246,0.3)"
+            onclick="window.open('https://mail.google.com/mail/?view=cm&to=seriess.agency@gmail.com&su=Demande%20Plan%20Entreprise%20Personnalisé&body=Bonjour,%20je%20souhaite%20obtenir%20un%20devis%20pour%20un%20plan%20Entreprise%20personnalisé.%0A%0AEntreprise%20:%20${currentCompany?.name||''}%0ACode%20:%20${currentCompany?.code||''}%0A%0ADécrivez%20vos%20besoins%20:%20','_blank')">
+            Nous contacter →
+          </button>
+        </div>
+
+      </div>
+
+      <div class="card" style="margin-top:1.5rem;text-align:center;border-color:var(--border)">
+        <div style="font-size:0.82rem;color:var(--slate2);font-weight:300;line-height:1.7">
+          🔒 Paiement sécurisé · Pas d'engagement · Résiliation en 1 clic · Facture disponible chaque mois
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCompte(){function renderCompte(){
+  const acc = currentCompany || {};
+  return `
+    <div class="grid-3" style="margin-bottom:1.5rem">
+      <div class="card card-sm"><div class="label">Entreprise</div><div style="font-size:1.1rem;font-weight:700">${acc.name||"—"}</div></div>
+      <div class="card card-sm"><div class="label">Code d'accès</div><div style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;color:var(--gold)">${acc.code||"—"}</div></div>
+      <div class="card card-sm"><div class="label">Plan</div><div style="font-size:1.1rem;font-weight:700;color:var(--gold)">${acc.plan||"—"}</div></div>
+    </div>
+    <div class="label">Apps connectées (${Object.keys(connectedApps).length})</div>
+    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem">
+      ${Object.keys(connectedApps).length === 0 
+        ? '<span style="color:var(--slate);font-size:0.82rem">Aucune app connectée pour l\'instant.</span>'
+        : Object.keys(connectedApps).map(k=>`<span class="chip active" style="cursor:default">${k}</span>`).join("")}
+    </div>
+    <div class="label">Services actifs</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.75rem">
+      ${[["⚙️","Automatisation"],["📊","Business Intelligence"],["✍️","Contenu IA"],["🤖","Agents IA"],["🎯","Marketing prédictif"],["🏗️","Formation IA"]].map(([ic,lb])=>
+        `<div class="card card-sm" style="display:flex;align-items:center;gap:0.75rem">
+          <span style="font-size:1.2rem">${ic}</span>
+          <div><div style="font-size:0.82rem;font-weight:600">${lb}</div><div style="font-size:0.72rem;color:var(--green)">✓ Actif</div></div>
+        </div>`).join("")}
+    </div>`;
+}
+
+// ═══════════════════════════════════
+// MODAL SAAS
+// ═══════════════════════════════════
+let currentSaasId = null;
+
+function openModal(saasId, tool){
+  const allSaas = Object.values(SAAS).flat();
+  const s = allSaas.find(x=>x.id===saasId);
+  if(!s) return;
+  currentSaasId = saasId;
+
+  document.getElementById("modalTitle").textContent = `Connecter ${s.name}`;
+  document.getElementById("modalSub").innerHTML = `${s.logo} Entrez vos informations de connexion ${s.name} pour activer l'intégration dans NovaMind.<br><br><a href="${s.url}" target="_blank" style="color:var(--gold);font-size:0.8rem">→ Obtenir mes identifiants ${s.name}</a>`;
+
+  document.getElementById("modalBody").innerHTML = s.fields.map(f=>`
+    <label class="f-label">${f.label}</label>
+    <input class="f-input" placeholder="${f.placeholder}" id="modal_${f.label.replace(/\s/g,'_')}"/>
+  `).join("");
+
+  document.getElementById("modalConfirm").onclick = ()=>connectApp(saasId, s.name);
+  document.getElementById("saasModal").classList.add("open");
+}
+
+function connectApp(id, name){
+  connectedApps[id] = {name, connectedAt: new Date().toISOString()};
+  localStorage.setItem("nm_apps", JSON.stringify(connectedApps));
+  closeModal();
+  renderContent(currentTool, 0);
+}
+
+function closeModal(){
+  document.getElementById("saasModal").classList.remove("open");
+}
+document.getElementById("saasModal").addEventListener("click", e=>{
+  if(e.target === document.getElementById("saasModal")) closeModal();
+});
+
+// ═══════════════════════════════════
+// CHIPS
+// ═══════════════════════════════════
+let selectedChips = {};
+function selectChip(el, key){
+  el.closest(".chips").querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+  el.classList.add("active");
+  selectedChips[key] = el.textContent;
+}
+
+// ═══════════════════════════════════
+// AI CALL
+// ═══════════════════════════════════
 const PROMPTS = {
-  automatisation: (data) => `Tu es un expert en automatisation de processus et RPA. 
-L'entreprise "${currentCompany.name}" veut automatiser le processus suivant :
-Type : ${data.procType || 'Non spécifié'}
-Outils actuels : ${data.outils || 'Non spécifié'}
-Description : ${data.input}
+  automatisation: ()=>{
+    const input = document.getElementById("mainInput")?.value||"";
+    const outils = document.getElementById("procOutils")?.value||"";
+    return `Tu es expert en automatisation RPA. L'entreprise "${currentCompany.name}" veut automatiser :
+Type : ${selectedChips.procType||"Non spécifié"} | Outils : ${outils}
+Description : ${input}
 
-Génère un plan d'automatisation complet et structuré comprenant :
-1. ANALYSE DU PROCESSUS - Identification des étapes automatisables
-2. ARCHITECTURE PROPOSÉE - Schéma du workflow automatisé (décris-le textuellement)
-3. OUTILS RECOMMANDÉS - Stack technique précis avec justification
-4. ÉTAPES DE DÉPLOIEMENT - Plan en 4 semaines maximum
-5. ROI ESTIMÉ - Temps économisé, coût, délai de rentabilisation
-6. RISQUES & MITIGATION - Points d'attention
+Génère un plan complet :
+1. ANALYSE - Étapes automatisables identifiées
+2. ARCHITECTURE - Workflow proposé (trigger → actions → résultat)
+3. OUTILS RECOMMANDÉS - Stack Make/Zapier/autre avec justification
+4. DÉPLOIEMENT - Plan en 4 étapes
+5. ROI ESTIMÉ - Temps économisé, délai rentabilisation
+Sois concret et actionnable.`;
+  },
+  bi: ()=>{
+    const input = document.getElementById("mainInput")?.value||"";
+    const secteur = document.getElementById("biSecteur")?.value||"";
+    return `Tu es expert Business Intelligence. Entreprise "${currentCompany.name}" secteur ${secteur}.
+Type d'analyse : ${selectedChips.biType||"général"} | Situation : ${input}
 
-Sois précis, concret et actionnable.`,
-
-  bi: (data) => `Tu es un expert en Business Intelligence et data analytics.
-Entreprise : "${currentCompany.name}" — Secteur : ${data.secteur || 'Non spécifié'}
-Type d'analyse demandé : ${data.biType || 'Analyse générale'}
-Contexte / données : ${data.input}
-
-Fournis une analyse structurée comprenant :
-1. DIAGNOSTIC - Interprétation de la situation décrite
-2. KPIs À SURVEILLER - Liste priorisée avec seuils d'alerte
-3. CAUSES PROBABLES - Hypothèses à valider par ordre de probabilité
-4. ANALYSES RECOMMANDÉES - Méthodes et outils adaptés
-5. ACTIONS IMMÉDIATES - 3 actions prioritaires dans les 30 prochains jours
-6. DASHBOARD SUGGÉRÉ - Métriques clés à afficher
-
-Sois analytique et data-driven dans ta réponse.`,
-
-  contenu: (data) => `Tu es un expert en content marketing et copywriting.
-Marque : "${data.brand || currentCompany.name}"
-Type de contenu : ${data.type || 'Article de blog'}
-Ton : ${data.ton}
-Sujet & infos : ${data.input}
-
-Génère le contenu complet et prêt à publier. Inclus :
-- Titre accrocheur (et variantes si pertinent)
-- Le contenu complet et structuré
-- Call-to-action adapté
-- Pour les posts réseaux sociaux : hashtags pertinents
-- Pour les articles : méta-description SEO
-
-Respecte strictement le ton demandé et optimise pour l'engagement.`,
-
-  agents: (data) => `Tu es un assistant IA professionnel de type "${data.agentType || 'Support client'}" pour l'entreprise "${currentCompany.name}".
-
-Contexte de l'entreprise et instructions :
-${data.context || 'Entreprise standard'}
-
-Tu dois répondre à cette question/demande client de façon professionnelle, utile et dans le ton de la marque :
-"${data.question}"
-
-Réponds directement comme si tu étais l'assistant en production. Sois précis, utile et concis.`,
-
-  predictif: (data) => `Tu es un expert en marketing prédictif et data science marketing.
-Entreprise : "${currentCompany.name}" — Secteur : ${data.secteur || 'Non spécifié'}
-Objectif prédictif : ${data.predType || 'Analyse comportementale'}
-Situation : ${data.input}
-
-Fournis une analyse prédictive complète :
-1. SEGMENTS IDENTIFIÉS - Groupes clients selon leur comportement probable
-2. SCORES DE RISQUE / OPPORTUNITÉ - Prédictions chiffrées avec méthodologie
-3. SIGNAUX D'ALERTE - Indicateurs comportementaux à surveiller
-4. STRATÉGIE DE CIBLAGE - Actions par segment avec messaging adapté
-5. CALENDRIER D'ACTIVATION - Timeline des campagnes recommandées
-6. MÉTRIQUES DE SUCCÈS - Comment mesurer l'impact
-
-Sois data-driven et fournis des recommandations concrètes et actionnables.`,
-
-  formation: (data) => `Tu es un expert en formation et transformation IA en entreprise.
-Entreprise : "${currentCompany.name}"
-Équipe : ${data.equipe || 'Équipe générale'} — ${data.nombre || 'N'} personnes
-Niveau actuel : ${data.niveau}
-Objectifs : ${data.input}
-
-Génère un plan de formation complet et structuré :
-1. BILAN DES COMPÉTENCES - État actuel et gaps identifiés
-2. OBJECTIFS PÉDAGOGIQUES - Compétences cibles par niveau
-3. PROGRAMME DÉTAILLÉ - Module par module sur 3 mois
-4. RESSOURCES & OUTILS - Liste des outils IA à maîtriser par rôle
-5. PLANNING SEMAINE PAR SEMAINE - Sessions, durées, formats
-6. ÉVALUATION - Comment mesurer la montée en compétences
-7. PROGRAMME CHAMPIONS IA - Comment identifier et former les référents
-
-Sois pratique et orienté résultats concrets.`
+Fournis : 1.DIAGNOSTIC 2.KPIs À SURVEILLER 3.CAUSES PROBABLES 4.ACTIONS PRIORITAIRES (30j) 5.DASHBOARD SUGGÉRÉ`;
+  },
+  contenu: ()=>{
+    const input = document.getElementById("mainInput")?.value||"";
+    const ton = document.getElementById("contenuTon")?.value||"professionnel";
+    const brand = document.getElementById("contenuBrand")?.value||currentCompany.name;
+    return `Tu es expert copywriting. Marque : "${brand}". Type : ${selectedChips.contenuType||"contenu"}. Ton : ${ton}.
+Sujet : ${input}
+Génère le contenu complet, prêt à publier, avec titre, corps, CTA et hashtags si réseau social.`;
+  },
+  agents: ()=>{
+    const context = document.getElementById("mainInput")?.value||"";
+    const question = document.getElementById("agentQuestion")?.value||"Bonjour";
+    return `Tu es un assistant IA de type "${selectedChips.agentType||"Support client"}" pour "${currentCompany.name}".
+Contexte : ${context}
+Réponds à cette question client : "${question}"
+Sois professionnel, utile et concis.`;
+  },
+  predictif: ()=>{
+    const input = document.getElementById("mainInput")?.value||"";
+    const secteur = document.getElementById("predSecteur")?.value||"";
+    return `Tu es expert marketing prédictif. Entreprise "${currentCompany.name}" secteur ${secteur}.
+Objectif : ${selectedChips.predType||"analyse"} | Données : ${input}
+Fournis : 1.SEGMENTS IDENTIFIÉS 2.SCORES RISQUE/OPPORTUNITÉ 3.SIGNAUX D'ALERTE 4.STRATÉGIE PAR SEGMENT 5.MÉTRIQUES DE SUCCÈS`;
+  },
+  formation: ()=>{
+    const input = document.getElementById("mainInput")?.value||"";
+    const niveau = document.getElementById("formNiveau")?.value||"";
+    const nombre = document.getElementById("formNombre")?.value||"";
+    return `Tu es expert formation IA. Entreprise "${currentCompany.name}".
+Équipe : ${selectedChips.formEquipe||"générale"} (${nombre} personnes) | Niveau : ${niveau}
+Objectifs : ${input}
+Génère un plan de formation complet sur 3 mois avec modules, timing, ressources et indicateurs de réussite.`;
+  },
 };
 
-async function runTool(toolId) {
-  let promptData = {};
+async function runAI(tool){
+  const content = document.getElementById("resultContent");
+  const input = document.getElementById("mainInput")?.value?.trim();
+  if(!input){ content.innerHTML = '<span class="result-placeholder">Veuillez remplir le champ principal avant de lancer.</span>'; return; }
 
-  if (toolId === 'automatisation') {
-    const input = document.getElementById('procInput').value.trim();
-    if (!input) { alert('Décrivez votre processus avant de lancer l\'analyse.'); return; }
-    promptData = { input, procType: selectedValues.procType, outils: document.getElementById('procOutils').value };
-  } else if (toolId === 'bi') {
-    const input = document.getElementById('biInput').value.trim();
-    if (!input) { alert('Décrivez votre situation avant de lancer l\'analyse.'); return; }
-    promptData = { input, biType: selectedValues.biType, secteur: document.getElementById('biSecteur').value };
-  } else if (toolId === 'contenu') {
-    const input = document.getElementById('contenuInput').value.trim();
-    if (!input) { alert('Renseignez le sujet avant de générer du contenu.'); return; }
-    promptData = { input, type: document.getElementById('contenuType').value, ton: document.getElementById('contenuTon').value, brand: document.getElementById('contenuBrand').value };
-  } else if (toolId === 'agents') {
-    const context = document.getElementById('agentContext').value.trim();
-    const question = document.getElementById('agentQuestion').value.trim();
-    if (!question) { alert('Posez une question à votre agent.'); return; }
-    promptData = { context, question, agentType: selectedValues.agentType };
-
-    const msgList = document.getElementById('agentMessages');
-    msgList.innerHTML = `
-      <div class="msg user"><div class="msg-role">Vous</div>${question}</div>
-      <div class="msg ai" id="aiMsg"><div class="msg-role">Agent IA</div><div class="loading-dots"><span></span><span></span><span></span></div></div>`;
-    document.getElementById('agentQuestion').value = '';
-  } else if (toolId === 'predictif') {
-    const input = document.getElementById('predInput').value.trim();
-    if (!input) { alert('Décrivez votre situation avant l\'analyse.'); return; }
-    promptData = { input, predType: selectedValues.predType, secteur: document.getElementById('predSecteur').value };
-  } else if (toolId === 'formation') {
-    const input = document.getElementById('formInput').value.trim();
-    if (!input) { alert('Décrivez vos objectifs de formation.'); return; }
-    promptData = { input, equipe: document.getElementById('formEquipe').value, niveau: document.getElementById('formNiveau').value, nombre: document.getElementById('formNombre').value };
-  }
-
-  const prompt = PROMPTS[toolId](promptData);
-  const resultBox = document.getElementById('result-' + toolId);
-
-  if (toolId !== 'agents') {
-    const content = resultBox.querySelector('.result-content');
-    content.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div> Analyse en cours...';
-  }
+  content.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div> Analyse en cours...';
 
   try {
-    const res = await fetch('https://novamind-api.vercel.app/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1500,
-        messages: [{ role: 'user', content: prompt }]
+    const res = await fetch("https://novamind-api.vercel.app/api/chat",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:1500,
+        messages:[{role:"user",content:PROMPTS[tool]?.()|| input}]
       })
     });
     const data = await res.json();
-    const text = data.content?.[0]?.text || 'Erreur lors de la génération.';
-
-    if (toolId === 'agents') {
-      document.getElementById('aiMsg').innerHTML = `<div class="msg-role">Agent IA</div>${text.replace(/\n/g,'<br>')}`;
-    } else {
-      const content = resultBox.querySelector('.result-content');
-      content.textContent = text;
-    }
-
-    // Update usage stats
-    const usage = JSON.parse(localStorage.getItem('nm_usage') || '{"analyses":0,"contenus":0,"requetes":0}');
+    const text = data.content?.[0]?.text || "Erreur lors de la génération.";
+    content.textContent = text;
     usage.requetes++;
-    if (toolId === 'contenu') usage.contenus++;
-    else usage.analyses++;
-    localStorage.setItem('nm_usage', JSON.stringify(usage));
-
-  } catch(err) {
-    const content = resultBox?.querySelector?.('.result-content') || document.getElementById('aiMsg');
-    if (content) content.textContent = 'Erreur de connexion à l\'API. Vérifiez votre clé API.';
+    if(tool==="contenu") usage.contenus++; else usage.analyses++;
+    localStorage.setItem("nm_usage", JSON.stringify(usage));
+  } catch(err){
+    content.textContent = "Erreur de connexion à l'API. Vérifiez votre proxy Vercel.";
   }
 }
 
-function copyResult(boxId) {
-  const box = document.getElementById(boxId);
-  const text = box.querySelector('.result-content')?.textContent || box.querySelector('.msg-list')?.textContent || '';
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = box.querySelector('.copy-btn');
-    const orig = btn.textContent;
-    btn.textContent = '✓ Copié';
-    setTimeout(() => btn.textContent = orig, 2000);
+function copyResult(){
+  const text = document.getElementById("resultContent")?.textContent||"";
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.querySelector(".copy-btn");
+    if(btn){const o=btn.textContent;btn.textContent="✓ Copié";setTimeout(()=>btn.textContent=o,2000);}
   });
-}
-
-function selectCard(el, key, value) {
-  const parent = el.closest('.cards-grid');
-  parent.querySelectorAll('.mini-card').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedValues[key] = value;
 }
 </script>
 </body>
